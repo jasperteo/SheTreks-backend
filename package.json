@@ -1,11 +1,16 @@
 {
   "name": "project4-backend",
   "module": "index.js",
-  "type": "module",
+  "scripts": {
+    "dev": "bun --hot run index.js"
+  },
   "devDependencies": {
     "@types/bun": "latest"
   },
   "peerDependencies": {
     "typescript": "^5.0.0"
+  },
+  "dependencies": {
+    "express": "^4.18.2"
   }
 }
