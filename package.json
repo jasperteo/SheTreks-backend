@@ -1,5 +1,5 @@
 {
-  "name": "project4-backend",
+  "name": "shetreks-backend",
   "module": "index.js",
   "scripts": {
     "start": "bun --hot run index.js"
