@@ -5,13 +5,17 @@
     "start": "bun --hot run index.js"
   },
   "devDependencies": {
-    "@types/bun": "latest"
+    "@types/bun": "latest",
+    "eslint": "^8.57.0",
+    "sequelize-cli": "^6.6.2"
   },
   "peerDependencies": {
-    "typescript": "^5.0.0"
+    "typescript": "^5.3.3"
   },
   "dependencies": {
     "express": "^4.18.2",
-    "hono": "^4.0.5"
+    "hono": "^4.0.6",
+    "pg": "^8.11.3",
+    "sequelize": "^6.37.1"
   }
 }
