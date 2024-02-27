@@ -1,6 +1,7 @@
 import { Hono } from "hono";
-import { clerkMiddleware, getAuth } from "@hono/clerk-auth";
 import { cors } from "hono/cors";
+// import { clerkMiddleware, getAuth } from "@hono/clerk-auth";
+// import { clerkClient, ClerkExpressWithAuth } from "@clerk/clerk-sdk-node";
 
 const db = require("./db/models/index");
 
