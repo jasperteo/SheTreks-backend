@@ -11,7 +11,7 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
       this.belongsTo(models.users, { foreignKey: "recipientId" });
       this.belongsTo(models.users, { foreignKey: "senderId" });
-      this.belongsTo(models.notification_types, { foreignKey: "notifType" });
+      this.belongsTo(models.notification_types, { foreignKey: "notifId" });
     }
   }
   notifications.init(
@@ -30,7 +30,7 @@ module.exports = (sequelize, DataTypes) => {
           key: "id",
         },
       },
-      notifType: {
+      notifId: {
         type: DataTypes.INTEGER,
         references: {
           model: "notification_types",

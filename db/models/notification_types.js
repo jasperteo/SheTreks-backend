@@ -9,7 +9,7 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      this.hasMany(models.notifications, { foreignKey: "notifType" });
+      this.hasMany(models.notifications, { foreignKey: "notifId" });
     }
   }
   notification_types.init(
