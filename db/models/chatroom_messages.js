@@ -1,7 +1,5 @@
-'use strict';
-const {
-  Model
-} = require('sequelize');
+"use strict";
+const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
   class chatroom_messages extends Model {
     /**
@@ -11,16 +9,33 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      this.belongsTo(models.chatrooms, { foreignKey: "chatroomId" });
+      this.belongsTo(models.users, { foreignKey: "senderId" });
     }
   }
-  chatroom_messages.init({
-    chatroomId: DataTypes.INTEGER,
-    senderId: DataTypes.INTEGER,
-    message: DataTypes.TEXT,
-    imageUrl: DataTypes.STRING
-  }, {
-    sequelize,
-    modelName: 'chatroom_messages',
-  });
+  chatroom_messages.init(
+    {
+      chatroomId: {
+        type: DataTypes.INTEGER,
+        references: {
+          model: "chatrooms",
+          key: "id",
+        },
+      },
+      senderId: {
+        type: DataTypes.INTEGER,
+        references: {
+          model: "users",
+          key: "id",
+        },
+      },
+      message: DataTypes.TEXT,
+      imageUrl: DataTypes.STRING,
+    },
+    {
+      sequelize,
+      modelName: "chatroom_messages",
+    }
+  );
   return chatroom_messages;
 };

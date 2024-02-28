@@ -15,8 +15,20 @@ module.exports = (sequelize, DataTypes) => {
   }
   participants.init(
     {
-      activityId: DataTypes.INTEGER,
-      userId: DataTypes.INTEGER,
+      activityId: {
+        type: DataTypes.INTEGER,
+        references: {
+          model: "activiies",
+          key: "id",
+        },
+      },
+      userId: {
+        type: DataTypes.INTEGER,
+        references: {
+          model: "users",
+          key: "id",
+        },
+      },
       status: DataTypes.BOOLEAN,
     },
     {

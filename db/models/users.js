@@ -15,6 +15,7 @@ module.exports = (sequelize, DataTypes) => {
       this.hasMany(models.followings, { foreignKey: "userId" });
       this.hasMany(models.followings, { foreignKey: "toFollowId" });
       this.hasMany(models.notifications, { foreignKey: "recipientId" });
+      this.hasMany(models.notifications, { foreignKey: "senderId" });
       this.hasMany(models.chatroom_members, { foreignKey: "userId" });
       this.hasMany(models.chatroom_messages, { foreignKey: "senderId" });
     }
