@@ -3,8 +3,10 @@ import BaseController from "./baseController";
 import { clerkClient } from "@clerk/clerk-sdk-node";
 
 export default class UsersController extends BaseController {
-  constructor(model) {
+  constructor(model, locationsModel, followingsModel) {
     super(model);
+    this.locationsModel = locationsModel;
+    this.followingsModel = followingsModel;
   }
 
   async getOne(c) {
@@ -12,6 +14,7 @@ export default class UsersController extends BaseController {
     try {
       const data = await this.model.findOne({
         where: { username },
+        includes: this.locationsModel,
       });
       return c.json(data);
     } catch (error) {
