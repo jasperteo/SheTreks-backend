@@ -51,21 +51,21 @@ export default class ActivitiesController extends BaseController {
   }
 
   async createActivity(c) {
-    const {
-      hostId,
-      title,
-      description,
-      imageUrl,
-      cost,
-      locationId,
-      address,
-      latitude,
-      longitude,
-      eventDate,
-      groupSizeId,
-      selectedCategoryIds,
-    } = await c.req.json();
     try {
+      const {
+        hostId,
+        title,
+        description,
+        imageUrl,
+        cost,
+        locationId,
+        address,
+        latitude,
+        longitude,
+        eventDate,
+        groupSizeId,
+        selectedCategoryIds,
+      } = await c.req.json();
       const data = await this.model.create({
         hostId,
         title,
@@ -133,8 +133,8 @@ export default class ActivitiesController extends BaseController {
 
   async addParticipant(c) {
     const { activityId } = c.req.param();
-    const { userId } = await c.req.json();
     try {
+      const { userId } = await c.req.json();
       const data = await this.participantsModel.create({
         activityId,
         userId,
