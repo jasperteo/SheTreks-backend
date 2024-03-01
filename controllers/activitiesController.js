@@ -147,12 +147,9 @@ export default class ActivitiesController extends BaseController {
   }
 
   async confirmParticipant(c) {
-    const { activityId } = c.req.param();
-    const { userId } = c.req.json();
+    const { participantId } = c.req.param();
     try {
-      const data = await this.participantsModel.findOne({
-        where: { activityId, userId },
-      });
+      const data = await this.participantsModel.findByPk(participantId);
       await data.update({ status: true });
       return c.json(data);
     } catch (error) {
@@ -161,12 +158,9 @@ export default class ActivitiesController extends BaseController {
   }
 
   async rejectParticipant(c) {
-    const { activityId } = c.req.param();
-    const { userId } = c.req.json();
+    const { participantId } = c.req.param();
     try {
-      const data = await this.participantsModel.findOne({
-        where: { activityId, userId },
-      });
+      const data = await this.participantsModel.findByPk(participantId);
       await data.destroy();
       return c.json(data);
     } catch (error) {

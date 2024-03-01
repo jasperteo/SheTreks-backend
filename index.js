@@ -5,7 +5,7 @@ import { clerkMiddleware } from "@hono/clerk-auth";
 
 const PORT = process.env.PORT;
 const app = new Hono();
-app.use(cors());
+app.use("*", cors());
 
 // importing DB
 import db from "./db/models/index";
