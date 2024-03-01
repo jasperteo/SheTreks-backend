@@ -37,6 +37,7 @@ module.exports = (sequelize, DataTypes) => {
           key: "id",
         },
       },
+      address: DataTypes.STRING,
       latitude: DataTypes.REAL,
       longtitude: DataTypes.REAL,
       eventDate: DataTypes.DATE,

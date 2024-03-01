@@ -35,6 +35,9 @@ module.exports = {
           key: "id",
         },
       },
+      address: {
+        type: Sequelize.STRING,
+      },
       latitude: {
         type: Sequelize.REAL,
       },

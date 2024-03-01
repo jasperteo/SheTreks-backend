@@ -58,6 +58,7 @@ export default class ActivitiesController extends BaseController {
       imageUrl,
       cost,
       locationId,
+      address,
       latitude,
       longtitude,
       eventDate,
@@ -72,6 +73,7 @@ export default class ActivitiesController extends BaseController {
         imageUrl,
         cost,
         locationId,
+        address,
         latitude,
         longtitude,
         eventDate,
@@ -87,8 +89,51 @@ export default class ActivitiesController extends BaseController {
     }
   }
 
+  async deleteActivity(c) {
+    const { activityId } = c.req.param();
+    try {
+      const data = await this.model.findByPk(activityId);
+      await data.destroy();
+      return c.json(data);
+    } catch (error) {
+      return c.status(500).json({ error: true, msg: error.message });
+    }
+  }
+
+  async getAllCategories(c) {
+    try {
+      const data = await this.categoriesModel.findAll();
+      return c.json(data);
+    } catch (error) {
+      return c.status(500).json({ error: true, msg: error.message });
+    }
+  }
+
+  async getAllGroupSizes(c) {
+    try {
+      const data = await this.groupSizesModel.findAll();
+      return c.json(data);
+    } catch (error) {
+      return c.status(500).json({ error: true, msg: error.message });
+    }
+  }
+
+  async getAllParticipants(c) {
+    const { activityId } = c.req.param();
+    try {
+      const data = await this.participantsModel.findAll({
+        where: { activityId },
+        include: this.usersModel,
+      });
+      return c.json(data);
+    } catch (error) {
+      return c.status(500).json({ error: true, msg: error.message });
+    }
+  }
+
   async addParticipant(c) {
-    const { activityId, userId } = c.req.json();
+    const { activityId } = c.req.param();
+    const { userId } = c.req.json();
     try {
       const data = await this.participantsModel.create({
         activityId,
@@ -115,26 +160,14 @@ export default class ActivitiesController extends BaseController {
     }
   }
 
-  async getAllParticipants(c) {
+  async rejectParticipant(c) {
     const { activityId } = c.req.param();
-    try {
-      const data = await this.participantsModel.findAll({
-        where: { activityId },
-        include: this.usersModel,
-      });
-      return c.json(data);
-    } catch (error) {
-      return c.status(500).json({ error: true, msg: error.message });
-    }
-  }
-
-  async getOneParticipant(c) {
-    const { activityId, userId } = c.req.json();
+    const { userId } = c.req.json();
     try {
       const data = await this.participantsModel.findOne({
         where: { activityId, userId },
-        include: this.usersModel,
       });
+      await data.destroy();
       return c.json(data);
     } catch (error) {
       return c.status(500).json({ error: true, msg: error.message });
