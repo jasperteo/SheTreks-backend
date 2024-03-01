@@ -41,7 +41,7 @@ module.exports = {
       latitude: {
         type: Sequelize.REAL,
       },
-      longtitude: {
+      longitude: {
         type: Sequelize.REAL,
       },
       eventDate: {

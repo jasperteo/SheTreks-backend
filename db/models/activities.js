@@ -39,7 +39,7 @@ module.exports = (sequelize, DataTypes) => {
       },
       address: DataTypes.STRING,
       latitude: DataTypes.REAL,
-      longtitude: DataTypes.REAL,
+      longitude: DataTypes.REAL,
       eventDate: DataTypes.DATE,
       groupSizeId: {
         type: DataTypes.INTEGER,

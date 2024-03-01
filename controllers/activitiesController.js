@@ -60,11 +60,11 @@ export default class ActivitiesController extends BaseController {
       locationId,
       address,
       latitude,
-      longtitude,
+      longitude,
       eventDate,
       groupSizeId,
       selectedCategoryIds,
-    } = c.req.json();
+    } = await c.req.json();
     try {
       const data = await this.model.create({
         hostId,
@@ -75,12 +75,12 @@ export default class ActivitiesController extends BaseController {
         locationId,
         address,
         latitude,
-        longtitude,
+        longitude,
         eventDate,
         groupSizeId,
       });
       const selectedCategories = await this.categoriesModel.findAll({
-        where: { categoryId: selectedCategoryIds },
+        where: { id: selectedCategoryIds },
       });
       await data.setCategories(selectedCategories);
       return c.json(data);
@@ -133,7 +133,7 @@ export default class ActivitiesController extends BaseController {
 
   async addParticipant(c) {
     const { activityId } = c.req.param();
-    const { userId } = c.req.json();
+    const { userId } = await c.req.json();
     try {
       const data = await this.participantsModel.create({
         activityId,
