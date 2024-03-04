@@ -11,7 +11,7 @@ export default class ActivitiesRouter {
   route() {
     router.get("/", this.controller.getAll.bind(this.controller));
     router.get(
-      "/excludeHost/:hostId",
+      "/excludeHost/:currentUserId",
       this.controller.getAllExcludeHost.bind(this.controller)
     );
     router.post("/", this.controller.createActivity.bind(this.controller));

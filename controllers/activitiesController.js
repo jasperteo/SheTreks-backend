@@ -19,10 +19,10 @@ export default class ActivitiesController extends BaseController {
   }
 
   async getAllExcludeHost(c) {
-    const { hostId } = c.req.param();
+    const { currentUserId } = c.req.param();
     try {
       const data = await this.model.findAll({
-        where: { hostId: { [this.model.Op.ne]: hostId } },
+        where: { hostId: { [this.model.Op.ne]: currentUserId } },
         order: [["eventDate", "ASC"]],
         include: [
           this.categoriesModel,
