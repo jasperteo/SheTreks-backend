@@ -16,7 +16,7 @@ const {
   participants,
   followings,
   categories,
-  groupSizes,
+  group_sizes,
 } = db;
 
 //importing Controllers
@@ -35,7 +35,7 @@ const locationsController = new LocationsController(locations);
 const activitiesController = new ActivitiesController(
   activities,
   categories,
-  groupSizes,
+  group_sizes,
   locations,
   participants,
   users
