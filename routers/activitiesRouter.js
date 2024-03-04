@@ -10,6 +10,10 @@ export default class ActivitiesRouter {
 
   route() {
     router.get("/", this.controller.getAll.bind(this.controller));
+    router.get(
+      "/excludeHost/:hostId",
+      this.controller.getAllExcludeHost.bind(this.controller)
+    );
     router.post("/", this.controller.createActivity.bind(this.controller));
     router.get(
       "/categories",
@@ -27,9 +31,8 @@ export default class ActivitiesRouter {
       "/participants/:participantId",
       this.controller.rejectParticipant.bind(this.controller)
     );
-    router.get("/:activityId", this.controller.getOne.bind(this.controller));
     router.delete(
-      "/:activityId",
+      "delete/:activityId",
       this.controller.deleteActivity.bind(this.controller)
     );
     router.get(
