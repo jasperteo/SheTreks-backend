@@ -37,6 +37,19 @@ export default class ActivitiesController extends BaseController {
     }
   }
 
+  async getAllByHost(c) {
+    const { currentUserId } = c.req.param();
+    try {
+      const data = await this.model.findAll({
+        where: { hostId: currentUserId },
+        order: [["eventDate", "ASC"]],
+      });
+      return c.json(data);
+    } catch (error) {
+      return c.status(500).json({ error: true, msg: error.message });
+    }
+  }
+
   async createActivity(c) {
     try {
       const {
@@ -126,6 +139,19 @@ export default class ActivitiesController extends BaseController {
         activityId,
         userId,
         status: false,
+      });
+      return c.json(data);
+    } catch (error) {
+      return c.status(500).json({ error: true, msg: error.message });
+    }
+  }
+
+  async getAllConfirmedParticipants(c) {
+    const { activityId } = c.req.param();
+    try {
+      const data = await this.participantsModel.findAll({
+        where: { activityId, status: true },
+        include: this.usersModel,
       });
       return c.json(data);
     } catch (error) {

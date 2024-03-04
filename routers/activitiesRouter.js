@@ -14,6 +14,10 @@ export default class ActivitiesRouter {
       "/excludeHost/:currentUserId",
       this.controller.getAllExcludeHost.bind(this.controller)
     );
+    router.get(
+      "/includeHost/:currentUserId",
+      this.controller.getAllByHost.bind(this.controller)
+    );
     router.post("/", this.controller.createActivity.bind(this.controller));
     router.get(
       "/categories",
@@ -38,6 +42,10 @@ export default class ActivitiesRouter {
     router.get(
       "/:activityId/participants",
       this.controller.getAllParticipants.bind(this.controller)
+    );
+    router.get(
+      "/:activityId/participants/confirmed",
+      this.controller.getAllConfirmedParticipants.bind(this.controller)
     );
     router.post(
       "/:activityId/participants",
