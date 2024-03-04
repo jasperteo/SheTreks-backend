@@ -3,10 +3,6 @@ import { Hono } from "hono";
 import { cors } from "hono/cors";
 import { clerkMiddleware } from "@hono/clerk-auth";
 
-const PORT = process.env.PORT;
-const app = new Hono();
-app.use("*", cors());
-
 // importing DB
 import db from "./db/models/index";
 const {
@@ -49,8 +45,16 @@ const activitiesRouter = new ActivitiesRouter(
   clerkMiddleware()
 ).route();
 
+const PORT = process.env.PORT;
+const app = new Hono();
+
+//implement cors midddleware on any method, all routes
+app.use(cors());
+
+//implementing routers
 app.route("/users", usersRouter);
 app.route("/locations", locationsRouter);
 app.route("/activities", activitiesRouter);
 
+//starting app
 export default { port: PORT, fetch: app.fetch };
