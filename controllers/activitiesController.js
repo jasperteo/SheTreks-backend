@@ -18,30 +18,17 @@ export default class ActivitiesController extends BaseController {
     this.usersModel = usersModel;
   }
 
-  async getAll(c) {
+  async getAllExcludeHost(c) {
+    const { currentUserId } = c.req.param();
     try {
       const data = await this.model.findAll({
+        where: { hostId: { [this.model.Op.ne]: currentUserId } },
         order: [["eventDate", "ASC"]],
         include: [
           this.categoriesModel,
           this.groupSizesModel,
           this.locationsModel,
-        ],
-      });
-      return c.json(data);
-    } catch (error) {
-      return c.status(500).json({ error: true, msg: error.message });
-    }
-  }
-
-  async getOne(c) {
-    const { activitiyId } = c.req.param();
-    try {
-      const data = await this.model.findByPk(activitiyId, {
-        include: [
-          this.categoriesModel,
-          this.groupSizesModel,
-          this.locationsModel,
+          this.usersModel,
         ],
       });
       return c.json(data);
