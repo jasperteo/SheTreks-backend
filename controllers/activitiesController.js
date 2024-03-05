@@ -94,6 +94,24 @@ export default class ActivitiesController extends BaseController {
     }
   }
 
+  async getOneActivity(c) {
+    const { activityId } = c.req.param();
+    try {
+      const data = await this.model.findByPk(activityId, {
+        include: [
+          this.locationsModel,
+          {
+            model: this.participantsModel,
+            include: [this.usersModel],
+          },
+        ],
+      });
+      return c.json(data);
+    } catch (error) {
+      return c.status(500).json({ error: true, msg: error.message });
+    }
+  }
+
   async deleteActivity(c) {
     const { activityId } = c.req.param();
     try {
