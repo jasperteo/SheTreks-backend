@@ -102,10 +102,7 @@ export default class ActivitiesController extends BaseController {
       const data = await this.model.findByPk(activityId, {
         include: [
           this.locationsModel,
-          {
-            model: this.participantsModel,
-            include: this.usersModel,
-          },
+          { model: this.participantsModel, include: this.usersModel },
         ],
       });
       return c.json(data);
@@ -194,17 +191,19 @@ export default class ActivitiesController extends BaseController {
   }
 
   async searchActivities(c) {
-    const { searchTerm } = c.req.param();
     try {
       const {
         startDate,
         endDate,
+        searchTerm,
         locationId,
         selectedCategoryIds,
         groupSizeId,
+        currentUserId,
       } = await c.req.json();
       const data = await this.model.findAll({
         where: {
+          hostId: { [Op.ne]: currentUserId },
           ...(startDate &&
             endDate && { eventDate: { [Op.between]: [startDate, endDate] } }),
           ...(startDate && !endDate && { eventDate: { [Op.gte]: startDate } }),
@@ -212,19 +211,16 @@ export default class ActivitiesController extends BaseController {
           ...(searchTerm && { title: { [Op.iLike]: `%${searchTerm}%` } }),
           ...(locationId && { locationId }),
           ...(groupSizeId && { groupSizeId }),
+          ...(selectedCategoryIds?.length > 0 && {
+            "$categories.id$": {
+              [Op.in]: selectedCategoryIds,
+            },
+          }),
         },
         include: [
           this.locationsModel,
           this.groupSizesModel,
-          selectedCategoryIds?.length > 0
-            ? {
-                model: this.categoriesModel,
-                through: {
-                  model: this.activityCategoriesModel,
-                  where: { categoryId: { [Op.in]: selectedCategoryIds } },
-                },
-              }
-            : this.categoriesModel,
+          this.categoriesModel,
         ],
       });
       return c.json(data);

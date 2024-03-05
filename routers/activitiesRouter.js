@@ -12,7 +12,7 @@ export default class ActivitiesRouter {
     router.get("/", this.controller.getAll.bind(this.controller));
     router.post("/", this.controller.createActivity.bind(this.controller));
     router.post(
-      "/search/:searchTerm",
+      "/search",
       this.controller.searchActivities.bind(this.controller)
     );
     router.get(

@@ -44,11 +44,11 @@ export default class UsersController extends BaseController {
 
   async updateUser(c) {
     const { userId } = c.req.param();
-    const { about, locationId } = c.req.json();
     try {
-      const user = await this.model.findByPk(userId);
-      await user.update(about, locationId);
-      return c.json(user);
+      const { about, locationId } = await c.req.json();
+      const data = await this.model.findByPk(userId);
+      await data.update({ about, locationId });
+      return c.json(data);
     } catch (error) {
       return c.status(500).json({ error: true, msg: error.message });
     }
