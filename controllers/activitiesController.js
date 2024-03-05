@@ -1,5 +1,6 @@
 "use strict";
 import BaseController from "./baseController";
+import { Op } from "sequelize";
 
 export default class ActivitiesController extends BaseController {
   constructor(
@@ -20,15 +21,19 @@ export default class ActivitiesController extends BaseController {
 
   async getAllExcludeHost(c) {
     const { currentUserId } = c.req.param();
+    console.log("user", currentUserId);
     try {
       const data = await this.model.findAll({
-        where: { hostId: { [this.model.Op.ne]: currentUserId } },
+        where: {
+          hostId: { [Op.ne]: currentUserId },
+        },
         order: [["eventDate", "ASC"]],
         include: [
-          this.categoriesModel,
-          this.groupSizesModel,
-          this.locationsModel,
-          this.usersModel,
+          { model: this.usersModel },
+          { model: this.categoriesModel },
+          { model: this.locationsModel },
+          { model: this.participantsModel },
+          { model: this.groupSizesModel },
         ],
       });
       return c.json(data);
