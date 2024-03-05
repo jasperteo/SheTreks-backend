@@ -47,7 +47,13 @@ export default class ActivitiesController extends BaseController {
       const data = await this.model.findAll({
         where: { hostId: currentUserId },
         order: [["eventDate", "ASC"]],
-        include: this.locationsModel,
+        include: [
+          this.locationsModel,
+          {
+            model: this.participantsModel,
+            include: [this.usersModel],
+          },
+        ],
       });
       return c.json(data);
     } catch (error) {
