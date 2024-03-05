@@ -21,7 +21,6 @@ export default class ActivitiesController extends BaseController {
 
   async getAllExcludeHost(c) {
     const { currentUserId } = c.req.param();
-    console.log("user", currentUserId);
     try {
       const data = await this.model.findAll({
         where: {
@@ -48,7 +47,7 @@ export default class ActivitiesController extends BaseController {
       const data = await this.model.findAll({
         where: { hostId: currentUserId },
         order: [["eventDate", "ASC"]],
-        include: [this.locationsModel],
+        include: this.locationsModel,
       });
       return c.json(data);
     } catch (error) {
