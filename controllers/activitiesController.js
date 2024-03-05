@@ -9,8 +9,7 @@ export default class ActivitiesController extends BaseController {
     groupSizesModel,
     locationsModel,
     participantsModel,
-    usersModel,
-    activityCategoriesModel
+    usersModel
   ) {
     super(model);
     this.categoriesModel = categoriesModel;
@@ -18,7 +17,6 @@ export default class ActivitiesController extends BaseController {
     this.locationsModel = locationsModel;
     this.participantsModel = participantsModel;
     this.usersModel = usersModel;
-    this.activityCategoriesModel = activityCategoriesModel;
   }
 
   async getAllExcludeHost(c) {
