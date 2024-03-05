@@ -39,6 +39,12 @@ export default class ActivitiesRouter {
       "delete/:activityId",
       this.controller.deleteActivity.bind(this.controller)
     );
+
+    router.get(
+      "/:activityId",
+      this.controller.getOneActivity.bind(this.controller)
+    );
+
     router.get(
       "/:activityId/participants",
       this.controller.getAllParticipants.bind(this.controller)
