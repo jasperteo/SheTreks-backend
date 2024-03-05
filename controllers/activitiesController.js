@@ -9,7 +9,8 @@ export default class ActivitiesController extends BaseController {
     groupSizesModel,
     locationsModel,
     participantsModel,
-    usersModel
+    usersModel,
+    activityCategoriesModel
   ) {
     super(model);
     this.categoriesModel = categoriesModel;
@@ -17,6 +18,7 @@ export default class ActivitiesController extends BaseController {
     this.locationsModel = locationsModel;
     this.participantsModel = participantsModel;
     this.usersModel = usersModel;
+    this.activityCategoriesModel = activityCategoriesModel;
   }
 
   async getAllExcludeHost(c) {
@@ -28,11 +30,11 @@ export default class ActivitiesController extends BaseController {
         },
         order: [["eventDate", "ASC"]],
         include: [
-          { model: this.usersModel },
-          { model: this.categoriesModel },
-          { model: this.locationsModel },
-          { model: this.participantsModel },
-          { model: this.groupSizesModel },
+          this.usersModel,
+          this.categoriesModel,
+          this.locationsModel,
+          this.participantsModel,
+          this.groupSizesModel,
         ],
       });
       return c.json(data);
@@ -102,7 +104,7 @@ export default class ActivitiesController extends BaseController {
           this.locationsModel,
           {
             model: this.participantsModel,
-            include: [this.usersModel],
+            include: this.usersModel,
           },
         ],
       });
@@ -135,19 +137,6 @@ export default class ActivitiesController extends BaseController {
   async getAllGroupSizes(c) {
     try {
       const data = await this.groupSizesModel.findAll();
-      return c.json(data);
-    } catch (error) {
-      return c.status(500).json({ error: true, msg: error.message });
-    }
-  }
-
-  async getAllParticipants(c) {
-    const { activityId } = c.req.param();
-    try {
-      const data = await this.participantsModel.findAll({
-        where: { activityId },
-        include: this.usersModel,
-      });
       return c.json(data);
     } catch (error) {
       return c.status(500).json({ error: true, msg: error.message });
@@ -198,6 +187,46 @@ export default class ActivitiesController extends BaseController {
     try {
       const data = await this.participantsModel.findByPk(participantId);
       await data.destroy();
+      return c.json(data);
+    } catch (error) {
+      return c.status(500).json({ error: true, msg: error.message });
+    }
+  }
+
+  async searchActivities(c) {
+    const { searchTerm } = c.req.param();
+    try {
+      const {
+        startDate,
+        endDate,
+        locationId,
+        selectedCategoryIds,
+        groupSizeId,
+      } = await c.req.json();
+      const data = await this.model.findAll({
+        where: {
+          ...(startDate &&
+            endDate && { eventDate: { [Op.between]: [startDate, endDate] } }),
+          ...(startDate && !endDate && { eventDate: { [Op.gte]: startDate } }),
+          ...(endDate && !startDate && { eventDate: { [Op.lte]: endDate } }),
+          ...(searchTerm && { title: { [Op.iLike]: `%${searchTerm}%` } }),
+          ...(locationId && { locationId }),
+          ...(groupSizeId && { groupSizeId }),
+        },
+        include: [
+          this.locationsModel,
+          this.groupSizesModel,
+          selectedCategoryIds?.length > 0
+            ? {
+                model: this.categoriesModel,
+                through: {
+                  model: this.activityCategoriesModel,
+                  where: { categoryId: { [Op.in]: selectedCategoryIds } },
+                },
+              }
+            : this.categoriesModel,
+        ],
+      });
       return c.json(data);
     } catch (error) {
       return c.status(500).json({ error: true, msg: error.message });

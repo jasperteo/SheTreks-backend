@@ -13,6 +13,7 @@ const {
   followings,
   categories,
   group_sizes,
+  activity_categories,
 } = db;
 
 //importing Controllers
@@ -34,7 +35,8 @@ const activitiesController = new ActivitiesController(
   group_sizes,
   locations,
   participants,
-  users
+  users,
+  activity_categories
 );
 
 //initializing Routers
