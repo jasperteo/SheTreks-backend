@@ -19,7 +19,7 @@ export default class UsersRouter {
       this.clerkMiddleware,
       this.controller.syncUser.bind(this.controller)
     );
-    router.post("/userId", this.controller.updateUser.bind(this.controller));
+    router.put("/:userId", this.controller.updateUser.bind(this.controller));
     return router;
   }
 }

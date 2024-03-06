@@ -10,6 +10,11 @@ export default class ActivitiesRouter {
 
   route() {
     router.get("/", this.controller.getAll.bind(this.controller));
+    router.post("/", this.controller.createActivity.bind(this.controller));
+    router.post(
+      "/search",
+      this.controller.searchActivities.bind(this.controller)
+    );
     router.get(
       "/excludeHost/:currentUserId",
       this.controller.getAllExcludeHost.bind(this.controller)
@@ -18,7 +23,6 @@ export default class ActivitiesRouter {
       "/includeHost/:currentUserId",
       this.controller.getAllByHost.bind(this.controller)
     );
-    router.post("/", this.controller.createActivity.bind(this.controller));
     router.get(
       "/categories",
       this.controller.getAllCategories.bind(this.controller)
@@ -36,28 +40,21 @@ export default class ActivitiesRouter {
       this.controller.rejectParticipant.bind(this.controller)
     );
     router.delete(
-      "delete/:activityId",
+      "/delete/:activityId",
       this.controller.deleteActivity.bind(this.controller)
     );
-
     router.get(
       "/:activityId",
       this.controller.getOneActivity.bind(this.controller)
-    );
-
-    router.get(
-      "/:activityId/participants",
-      this.controller.getAllParticipants.bind(this.controller)
-    );
-    router.get(
-      "/:activityId/participants/confirmed",
-      this.controller.getAllConfirmedParticipants.bind(this.controller)
     );
     router.post(
       "/:activityId/participants",
       this.controller.addParticipant.bind(this.controller)
     );
-
+    router.get(
+      "/:activityId/participants/confirmed",
+      this.controller.getAllConfirmedParticipants.bind(this.controller)
+    );
     return router;
   }
 }

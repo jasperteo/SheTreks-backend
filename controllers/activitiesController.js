@@ -28,11 +28,11 @@ export default class ActivitiesController extends BaseController {
         },
         order: [["eventDate", "ASC"]],
         include: [
-          { model: this.usersModel },
-          { model: this.categoriesModel },
-          { model: this.locationsModel },
-          { model: this.participantsModel },
-          { model: this.groupSizesModel },
+          this.usersModel,
+          this.categoriesModel,
+          this.locationsModel,
+          this.participantsModel,
+          this.groupSizesModel,
         ],
       });
       return c.json(data);
@@ -106,10 +106,7 @@ export default class ActivitiesController extends BaseController {
       const data = await this.model.findByPk(activityId, {
         include: [
           this.locationsModel,
-          {
-            model: this.participantsModel,
-            include: [this.usersModel],
-          },
+          { model: this.participantsModel, include: this.usersModel },
         ],
       });
       return c.json(data);
@@ -141,19 +138,6 @@ export default class ActivitiesController extends BaseController {
   async getAllGroupSizes(c) {
     try {
       const data = await this.groupSizesModel.findAll();
-      return c.json(data);
-    } catch (error) {
-      return c.status(500).json({ error: true, msg: error.message });
-    }
-  }
-
-  async getAllParticipants(c) {
-    const { activityId } = c.req.param();
-    try {
-      const data = await this.participantsModel.findAll({
-        where: { activityId },
-        include: this.usersModel,
-      });
       return c.json(data);
     } catch (error) {
       return c.status(500).json({ error: true, msg: error.message });
@@ -204,6 +188,45 @@ export default class ActivitiesController extends BaseController {
     try {
       const data = await this.participantsModel.findByPk(participantId);
       await data.destroy();
+      return c.json(data);
+    } catch (error) {
+      return c.status(500).json({ error: true, msg: error.message });
+    }
+  }
+
+  async searchActivities(c) {
+    try {
+      const {
+        startDate,
+        endDate,
+        searchTerm,
+        locationId,
+        selectedCategoryIds,
+        groupSizeId,
+        currentUserId,
+      } = await c.req.json();
+      const data = await this.model.findAll({
+        where: {
+          hostId: { [Op.ne]: currentUserId },
+          ...(startDate &&
+            endDate && { eventDate: { [Op.between]: [startDate, endDate] } }),
+          ...(startDate && !endDate && { eventDate: { [Op.gte]: startDate } }),
+          ...(endDate && !startDate && { eventDate: { [Op.lte]: endDate } }),
+          ...(searchTerm && { title: { [Op.iLike]: `%${searchTerm}%` } }),
+          ...(locationId && { locationId }),
+          ...(groupSizeId && { groupSizeId }),
+          ...(selectedCategoryIds?.length > 0 && {
+            "$categories.id$": {
+              [Op.in]: selectedCategoryIds,
+            },
+          }),
+        },
+        include: [
+          this.locationsModel,
+          this.groupSizesModel,
+          this.categoriesModel,
+        ],
+      });
       return c.json(data);
     } catch (error) {
       return c.status(500).json({ error: true, msg: error.message });
