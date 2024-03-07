@@ -398,10 +398,10 @@ module.exports = {
   },
 
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable("user");
-    await queryInterface.dropTable("activities");
-    await queryInterface.dropTable("activity_categories");
-    await queryInterface.dropTable("participants");
-    await queryInterface.dropTable("following");
+    await queryInterface.dropTable("user", null, {});
+    await queryInterface.dropTable("activities", null, {});
+    await queryInterface.dropTable("activity_categories", null, {});
+    await queryInterface.dropTable("participants", null, {});
+    await queryInterface.dropTable("following", null, {});
   },
 };
