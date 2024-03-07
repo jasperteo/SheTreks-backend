@@ -14,7 +14,7 @@ export default class UsersController extends BaseController {
     try {
       const data = await this.model.findOne({
         where: { username },
-        includes: this.locationsModel,
+        include: this.locationsModel,
       });
       return c.json(data);
     } catch (error) {
@@ -48,6 +48,54 @@ export default class UsersController extends BaseController {
       const { about, locationId } = await c.req.json();
       const data = await this.model.findByPk(userId);
       await data.update({ about, locationId });
+      return c.json(data);
+    } catch (error) {
+      return c.status(500).json({ error: true, msg: error.message });
+    }
+  }
+
+  async followUser(c) {
+    const { userId, toFollowId } = c.req.param();
+    try {
+      const data = await this.followingsModel.create({ userId, toFollowId });
+      return c.json(data);
+    } catch (error) {
+      return c.status(500).json({ error: true, msg: error.message });
+    }
+  }
+
+  async unfollowUser(c) {
+    const { userId, toFollowId } = c.req.param();
+    try {
+      const data = await this.followingsModel.destroy({
+        where: { userId, toFollowId },
+      });
+      return c.json(data);
+    } catch (error) {
+      return c.status(500).json({ error: true, msg: error.message });
+    }
+  }
+
+  async getFollowers(c) {
+    const { toFollowId } = c.req.param();
+    try {
+      const data = await this.followingsModel.findAndCountAll({
+        where: { toFollowId },
+        include: this.model,
+      });
+      return c.json(data);
+    } catch (error) {
+      return c.status(500).json({ error: true, msg: error.message });
+    }
+  }
+
+  async getFollowing(c) {
+    const { userId } = c.req.param();
+    try {
+      const data = await this.followingsModel.findAndCountAll({
+        where: { userId },
+        include: this.model,
+      });
       return c.json(data);
     } catch (error) {
       return c.status(500).json({ error: true, msg: error.message });
