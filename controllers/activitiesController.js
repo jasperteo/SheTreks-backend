@@ -77,6 +77,7 @@ export default class ActivitiesController extends BaseController {
         groupSizeId,
         selectedCategoryIds,
       } = await c.req.json();
+      console.log("Anyid?", selectedCategoryIds);
       const data = await this.model.create({
         hostId,
         title,
@@ -90,6 +91,7 @@ export default class ActivitiesController extends BaseController {
         eventDate,
         groupSizeId,
       });
+      console.log("id 2?", selectedCategoryIds);
       const selectedCategories = await this.categoriesModel.findAll({
         where: { id: selectedCategoryIds },
       });
