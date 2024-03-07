@@ -10,6 +10,22 @@ export default class UsersRouter {
 
   route() {
     router.get("/", this.controller.getAll.bind(this.controller));
+    router.post(
+      "/follow/:userId/:toFollowId",
+      this.controller.followUser.bind(this.controller)
+    );
+    router.delete(
+      "/unfollow/:userId/:toFollowId",
+      this.controller.unfollowUser.bind(this.controller)
+    );
+    router.get(
+      "/followers/:toFollowId",
+      this.controller.getFollowers.bind(this.controller)
+    );
+    router.get(
+      "/following/:userId",
+      this.controller.getFollowing.bind(this.controller)
+    );
     router.get(
       "/profile/:username",
       this.controller.getOne.bind(this.controller)
