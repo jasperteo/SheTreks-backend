@@ -16,37 +16,37 @@ module.exports = {
       "notification_types",
       [
         {
-          notifTypeName: "Join event request submitted.",
+          notifTypeName: "Join request",
           createdAt: new Date(),
           updatedAt: new Date(),
         },
         {
-          notifTypeName: "Approved participation request.",
+          notifTypeName: "has approved your request to join",
           createdAt: new Date(),
           updatedAt: new Date(),
         },
         {
-          notifTypeName: "Declined participation request.",
+          notifTypeName: "has declined your request to join",
           createdAt: new Date(),
           updatedAt: new Date(),
         },
         {
-          notifTypeName: "Following request submitted.",
+          notifTypeName: "has withdrawn from ",
           createdAt: new Date(),
           updatedAt: new Date(),
         },
         {
-          notifTypeName: "Following request approved.",
+          notifTypeName: "has cancelled the ",
           createdAt: new Date(),
           updatedAt: new Date(),
         },
         {
-          notifTypeName: "Event cancelled.",
+          notifTypeName: "starts to follow you.",
           createdAt: new Date(),
           updatedAt: new Date(),
         },
         {
-          notifTypeName: "Unread messages.",
+          notifTypeName: "You have messages in",
           createdAt: new Date(),
           updatedAt: new Date(),
         },
