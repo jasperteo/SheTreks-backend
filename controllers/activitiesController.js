@@ -61,6 +61,36 @@ export default class ActivitiesController extends BaseController {
     }
   }
 
+  async getAllPastByHost(c) {
+    console.log("passthrough 1");
+    const { currentUserId } = c.req.param();
+    try {
+      const currentDate = new Date(); // get the current date
+      console.log("passthrough 2");
+      const data = await this.model.findAll({
+        where: {
+          hostId: currentUserId,
+          eventDate: {
+            [Op.lt]: currentDate,
+          },
+        },
+
+        order: [["eventDate", "ASC"]],
+        include: [
+          this.locationsModel,
+          {
+            model: this.participantsModel,
+            where: { status: true },
+            include: [this.usersModel],
+          },
+        ],
+      });
+      return c.json(data);
+    } catch (error) {
+      return c.status(500).json({ error: true, msg: error.message });
+    }
+  }
+
   async createActivity(c) {
     try {
       const {

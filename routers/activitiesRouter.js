@@ -24,6 +24,10 @@ export default class ActivitiesRouter {
       this.controller.getAllByHost.bind(this.controller)
     );
     router.get(
+      "/includeHost/:currentUserId/past",
+      this.controller.getAllPastByHost.bind(this.controller)
+    );
+    router.get(
       "/categories",
       this.controller.getAllCategories.bind(this.controller)
     );
@@ -55,6 +59,7 @@ export default class ActivitiesRouter {
       "/:activityId/participants/confirmed",
       this.controller.getAllConfirmedParticipants.bind(this.controller)
     );
+
     return router;
   }
 }
