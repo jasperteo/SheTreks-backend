@@ -73,7 +73,7 @@ export default class ActivitiesController extends BaseController {
           [Op.or]: [
             { hostId: currentUserId },
             literal(`EXISTS (
-            SELECT ${currentUserId} FROM "participants"
+            SELECT FROM "participants"
             WHERE "participants"."activityId" = "activities"."id"
             AND "participants"."userId" = ${currentUserId}
             AND "participants"."status" = true
