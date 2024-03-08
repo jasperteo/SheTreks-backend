@@ -67,8 +67,9 @@ export default class ActivitiesController extends BaseController {
     }
   }
 
-  async getAllPastByHost(c) {
+  async getAllPastByAccOwner(c) {
     const { currentUserId } = c.req.param();
+
     try {
       const data = await this.model.findAll({
         where: {
@@ -78,71 +79,39 @@ export default class ActivitiesController extends BaseController {
               "$participants.userId$": currentUserId,
               "$participants.status$": true,
             },
+            // to include participants who joined user in user's joined event
+            {
+              "$participants.userId$": { [Op.not]: currentUserId },
+              "$participants.status$": true,
+            },
           ],
-          // eventDate: { [Op.lt]: new Date() },
+          eventDate: { [Op.lt]: new Date() },
         },
         include: [
-          this.locationsModel,
-          this.participantsModel,
-          { model: this.participantsModel, where: { status: true } },
-          this.usersModel,
-          this.categoriesModel,
+          { model: this.locationsModel, attributes: ["city", "country"] },
+          { model: this.participantsModel, attributes: ["userId"] },
+          {
+            model: this.participantsModel,
+            where: { status: true },
+            include: [
+              {
+                model: this.usersModel,
+                attributes: ["username", "firstName", "imageUrl"],
+              },
+            ],
+          },
+          {
+            model: this.usersModel,
+            attributes: ["username", "firstName", "imageUrl"],
+          },
+          { model: this.categoriesModel, attributes: ["id", "categoryName"] },
         ],
       });
+
       return c.json(data);
     } catch (error) {
       return c.status(500).json({ error: true, msg: error.message });
     }
-    // try {
-    //   const hosted = await this.model.findAll({
-    //     where: {
-    //       hostId: currentUserId,
-    //       eventDate: {
-    //         [Op.lt]: new Date(),
-    //       },
-    //     },
-    //     order: [["eventDate", "ASC"]],
-    //     include: [
-    //       this.locationsModel,
-    //       {
-    //         model: this.participantsModel,
-    //         where: { status: true },
-    //         include: [
-    //           {
-    //             model: this.usersModel,
-    //             attributes: ["id", "username", "imageUrl", "firstName"],
-    //           },
-    //         ],
-    //       },
-    //     ],
-    //   });
-    //   const joined = await this.participantsModel.findAll({
-    //     where: { userId: currentUserId, status: true },
-    //     include: [
-    //       {
-    //         model: this.model,
-    //         where: {
-    //           eventDate: {
-    //             [Op.lt]: new Date(),
-    //           },
-    //         },
-    //         include: [
-    //           this.locationsModel,
-    //           {
-    //             model: this.usersModel,
-    //             attributes: ["id", "username", "imageUrl", "firstName"],
-    //           },
-    //         ],
-    //       },
-    //     ],
-    //   });
-
-    //   const events = hosted.concat(joined);
-
-    //   return c.json(events);
-    // } catch (error) {
-    //   return c.status(500).json({ error: true, msg: error.message });
-    // }
   }
 
   async createActivity(c) {
