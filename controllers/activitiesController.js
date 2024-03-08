@@ -25,6 +25,9 @@ export default class ActivitiesController extends BaseController {
       const data = await this.model.findAll({
         where: {
           hostId: { [Op.ne]: currentUserId },
+          eventDate: {
+            [Op.gt]: new Date(),
+          },
           "$participants.userId$": {
             [Op.or]: [null, { [Op.ne]: currentUserId }],
           },
@@ -283,6 +286,30 @@ export default class ActivitiesController extends BaseController {
           this.locationsModel,
           this.groupSizesModel,
           this.categoriesModel,
+        ],
+      });
+      return c.json(data);
+    } catch (error) {
+      return c.status(500).json({ error: true, msg: error.message });
+    }
+  }
+
+  async getAllJoinedByHost(c) {
+    const { currentUserId } = c.req.param();
+    try {
+      const data = await this.model.findAll({
+        where: {
+          eventDate: {
+            [Op.gt]: new Date(),
+          },
+          "$participants.userId$": currentUserId,
+        },
+        order: [["eventDate", "ASC"]],
+        include: [
+          this.usersModel,
+          this.categoriesModel,
+          this.locationsModel,
+          this.participantsModel,
         ],
       });
       return c.json(data);
