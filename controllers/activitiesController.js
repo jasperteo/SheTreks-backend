@@ -1,6 +1,6 @@
 "use strict";
 import BaseController from "./baseController";
-import { Op, where } from "sequelize";
+import { Op, literal } from "sequelize";
 
 export default class ActivitiesController extends BaseController {
   constructor(
@@ -25,9 +25,7 @@ export default class ActivitiesController extends BaseController {
       const data = await this.model.findAll({
         where: {
           hostId: { [Op.ne]: currentUserId },
-          eventDate: {
-            [Op.gt]: new Date(),
-          },
+          eventDate: { [Op.gt]: new Date() },
           "$participants.userId$": {
             [Op.or]: [null, { [Op.ne]: currentUserId }],
           },
@@ -73,18 +71,26 @@ export default class ActivitiesController extends BaseController {
       const data = await this.model.findAll({
         where: {
           [Op.or]: [
-            // { hostId: currentUserId },
-            {
-              "$participants.userId$": currentUserId,
-              "$participants.status$": true,
-            },
+            { hostId: currentUserId },
+            literal(`EXISTS (
+            SELECT ${currentUserId} FROM "participants"
+            WHERE "participants"."activityId" = "activities"."id"
+            AND "participants"."userId" = ${currentUserId}
+            AND "participants"."status" = true
+            )`),
           ],
+          eventDate: { [Op.lt]: new Date() },
         },
         include: [
           {
             model: this.participantsModel,
+            include: this.usersModel,
             where: { status: true },
+            required: true, //false if you wanna include activities where host is all by herself and no one joined
           },
+          this.locationsModel,
+          this.usersModel,
+          this.categoriesModel,
         ],
       });
       return c.json(data);
