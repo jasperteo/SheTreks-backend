@@ -59,6 +59,10 @@ export default class ActivitiesRouter {
       "/:activityId/participants/confirmed",
       this.controller.getAllConfirmedParticipants.bind(this.controller)
     );
+    router.get(
+      "/joinedByHost/:currentUserId",
+      this.controller.getAllJoinedByHost.bind(this.controller)
+    );
 
     return router;
   }
