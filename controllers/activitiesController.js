@@ -1,6 +1,6 @@
 "use strict";
 import BaseController from "./baseController";
-import { Op } from "sequelize";
+import { Op, where } from "sequelize";
 
 export default class ActivitiesController extends BaseController {
   constructor(
@@ -57,7 +57,7 @@ export default class ActivitiesController extends BaseController {
           this.locationsModel,
           {
             model: this.participantsModel,
-            include: [this.usersModel],
+            include: this.usersModel,
           },
         ],
       });
@@ -69,45 +69,24 @@ export default class ActivitiesController extends BaseController {
 
   async getAllPastByAccOwner(c) {
     const { currentUserId } = c.req.param();
-
     try {
       const data = await this.model.findAll({
         where: {
           [Op.or]: [
-            { hostId: currentUserId },
+            // { hostId: currentUserId },
             {
               "$participants.userId$": currentUserId,
               "$participants.status$": true,
             },
-            // to include participants who joined user in user's joined event
-            {
-              "$participants.userId$": { [Op.not]: currentUserId },
-              "$participants.status$": true,
-            },
           ],
-          eventDate: { [Op.lt]: new Date() },
         },
         include: [
-          { model: this.locationsModel, attributes: ["city", "country"] },
-          { model: this.participantsModel, attributes: ["userId"] },
           {
             model: this.participantsModel,
             where: { status: true },
-            include: [
-              {
-                model: this.usersModel,
-                attributes: ["username", "firstName", "imageUrl"],
-              },
-            ],
           },
-          {
-            model: this.usersModel,
-            attributes: ["username", "firstName", "imageUrl"],
-          },
-          { model: this.categoriesModel, attributes: ["id", "categoryName"] },
         ],
       });
-
       return c.json(data);
     } catch (error) {
       return c.status(500).json({ error: true, msg: error.message });
