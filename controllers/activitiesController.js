@@ -287,7 +287,7 @@ export default class ActivitiesController extends BaseController {
     }
   }
 
-  async getAllJoinedByHost(c) {
+  async getAllJoinedByUser(c) {
     const { currentUserId } = c.req.param();
     try {
       const data = await this.model.findAll({
@@ -296,13 +296,19 @@ export default class ActivitiesController extends BaseController {
             [Op.gt]: new Date(),
           },
           "$participants.userId$": currentUserId,
+          "$participants.status$": true,
         },
         order: [["eventDate", "ASC"]],
         include: [
-          this.usersModel,
-          this.categoriesModel,
           this.locationsModel,
           this.participantsModel,
+          {
+            model: this.participantsModel,
+            where: { status: true },
+            include: [this.usersModel],
+          },
+          this.usersModel,
+          this.categoriesModel,
         ],
       });
       return c.json(data);

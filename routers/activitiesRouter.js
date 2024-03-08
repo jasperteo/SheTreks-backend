@@ -60,8 +60,8 @@ export default class ActivitiesRouter {
       this.controller.getAllConfirmedParticipants.bind(this.controller)
     );
     router.get(
-      "/joinedByHost/:currentUserId",
-      this.controller.getAllJoinedByHost.bind(this.controller)
+      "/joinedByUser/:currentUserId",
+      this.controller.getAllJoinedByUser.bind(this.controller)
     );
 
     return router;
