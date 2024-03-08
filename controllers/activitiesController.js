@@ -25,6 +25,9 @@ export default class ActivitiesController extends BaseController {
       const data = await this.model.findAll({
         where: {
           hostId: { [Op.ne]: currentUserId },
+          "$participants.userId$": {
+            [Op.or]: [null, { [Op.ne]: currentUserId }],
+          },
         },
         order: [["eventDate", "ASC"]],
         include: [
