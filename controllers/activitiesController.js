@@ -70,55 +70,79 @@ export default class ActivitiesController extends BaseController {
   async getAllPastByHost(c) {
     const { currentUserId } = c.req.param();
     try {
-      const hosted = await this.model.findAll({
+      const data = await this.model.findAll({
         where: {
-          hostId: currentUserId,
-          eventDate: {
-            [Op.lt]: new Date(),
-          },
+          [Op.or]: [
+            { hostId: currentUserId },
+            {
+              "$participants.userId$": currentUserId,
+              "$participants.status$": true,
+            },
+          ],
+          // eventDate: { [Op.lt]: new Date() },
         },
-        order: [["eventDate", "ASC"]],
         include: [
           this.locationsModel,
-          {
-            model: this.participantsModel,
-            where: { status: true },
-            include: [
-              {
-                model: this.usersModel,
-                attributes: ["id", "username", "imageUrl", "firstName"],
-              },
-            ],
-          },
+          this.participantsModel,
+          { model: this.participantsModel, where: { status: true } },
+          this.usersModel,
+          this.categoriesModel,
         ],
       });
-      const joined = await this.participantsModel.findAll({
-        where: { userId: currentUserId, status: true },
-        include: [
-          {
-            model: this.model,
-            where: {
-              eventDate: {
-                [Op.lt]: new Date(),
-              },
-            },
-            include: [
-              this.locationsModel,
-              {
-                model: this.usersModel,
-                attributes: ["id", "username", "imageUrl", "firstName"],
-              },
-            ],
-          },
-        ],
-      });
-
-      const events = hosted.concat(joined);
-
-      return c.json(events);
+      return c.json(data);
     } catch (error) {
       return c.status(500).json({ error: true, msg: error.message });
     }
+    // try {
+    //   const hosted = await this.model.findAll({
+    //     where: {
+    //       hostId: currentUserId,
+    //       eventDate: {
+    //         [Op.lt]: new Date(),
+    //       },
+    //     },
+    //     order: [["eventDate", "ASC"]],
+    //     include: [
+    //       this.locationsModel,
+    //       {
+    //         model: this.participantsModel,
+    //         where: { status: true },
+    //         include: [
+    //           {
+    //             model: this.usersModel,
+    //             attributes: ["id", "username", "imageUrl", "firstName"],
+    //           },
+    //         ],
+    //       },
+    //     ],
+    //   });
+    //   const joined = await this.participantsModel.findAll({
+    //     where: { userId: currentUserId, status: true },
+    //     include: [
+    //       {
+    //         model: this.model,
+    //         where: {
+    //           eventDate: {
+    //             [Op.lt]: new Date(),
+    //           },
+    //         },
+    //         include: [
+    //           this.locationsModel,
+    //           {
+    //             model: this.usersModel,
+    //             attributes: ["id", "username", "imageUrl", "firstName"],
+    //           },
+    //         ],
+    //       },
+    //     ],
+    //   });
+
+    //   const events = hosted.concat(joined);
+
+    //   return c.json(events);
+    // } catch (error) {
+    //   return c.status(500).json({ error: true, msg: error.message });
+    // }
   }
 
   async createActivity(c) {
