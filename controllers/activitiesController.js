@@ -287,7 +287,7 @@ export default class ActivitiesController extends BaseController {
     }
   }
 
-  async getAllJoinedByHost(c) {
+  async getAllJoinedByUser(c) {
     const { currentUserId } = c.req.param();
     try {
       const data = await this.model.findAll({
