@@ -306,11 +306,10 @@ export default class ActivitiesController extends BaseController {
         },
         order: [["eventDate", "ASC"]],
         include: [
-          //   this.usersModel,
-          //   this.categoriesModel,
-          //   this.locationsModel,
+          this.usersModel,
+          this.categoriesModel,
+          this.locationsModel,
           this.participantsModel,
-          //   this.groupSizesModel,
         ],
       });
       return c.json(data);
