@@ -90,6 +90,7 @@ export default class ActivitiesController extends BaseController {
         ],
       });
       const joined = await this.participantsModel.findAll({
+        //user activity id, get all pariticpants, include user id
         where: { userId: currentUserId, status: true },
         include: [
           {
