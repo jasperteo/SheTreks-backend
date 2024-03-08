@@ -62,30 +62,54 @@ export default class ActivitiesController extends BaseController {
   }
 
   async getAllPastByHost(c) {
-    console.log("passthrough 1");
     const { currentUserId } = c.req.param();
     try {
-      const currentDate = new Date(); // get the current date
-      console.log("passthrough 2");
-      const data = await this.model.findAll({
+      const hosted = await this.model.findAll({
         where: {
           hostId: currentUserId,
           eventDate: {
-            [Op.lt]: currentDate,
+            [Op.lt]: new Date(),
           },
         },
-
         order: [["eventDate", "ASC"]],
         include: [
           this.locationsModel,
           {
             model: this.participantsModel,
             where: { status: true },
-            include: [this.usersModel],
+            include: [
+              {
+                model: this.usersModel,
+                attributes: ["id", "username", "imageUrl", "firstName"],
+              },
+            ],
           },
         ],
       });
-      return c.json(data);
+      const joined = await this.participantsModel.findAll({
+        where: { userId: currentUserId, status: true },
+        include: [
+          {
+            model: this.model,
+            where: {
+              eventDate: {
+                [Op.lt]: new Date(),
+              },
+            },
+            include: [
+              this.locationsModel,
+              {
+                model: this.usersModel,
+                attributes: ["id", "username", "imageUrl", "firstName"],
+              },
+            ],
+          },
+        ],
+      });
+
+      const events = hosted.concat(joined);
+
+      return c.json(events);
     } catch (error) {
       return c.status(500).json({ error: true, msg: error.message });
     }
