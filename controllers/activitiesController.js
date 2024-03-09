@@ -26,8 +26,14 @@ export default class ActivitiesController extends BaseController {
         where: {
           hostId: { [Op.ne]: currentUserId },
           eventDate: { [Op.gt]: new Date() },
-          "$participants.userId$": {
-            [Op.or]: [null, { [Op.ne]: currentUserId }],
+          // "$participants.userId$": {
+          //   [Op.or]: [null, { [Op.ne]: currentUserId }],
+          // },
+          id: {
+            [Op.notIn]: literal(
+              `(SELECT "activityId" FROM "participants"
+              WHERE "userId" = ${currentUserId})`
+            ),
           },
         },
         order: [["eventDate", "ASC"]],
@@ -35,8 +41,8 @@ export default class ActivitiesController extends BaseController {
           this.usersModel,
           this.categoriesModel,
           this.locationsModel,
-          this.participantsModel,
           this.groupSizesModel,
+          this.participantsModel,
         ],
       });
       return c.json(data);
