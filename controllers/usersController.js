@@ -116,7 +116,7 @@ export default class UsersController extends BaseController {
     }
   }
 
-  async addNotification(c) {
+  async createNotification(c) {
     try {
       const { recipientId, senderId, notifId } = await c.req.json();
       const data = await this.notificationsModel.create({
@@ -132,9 +132,9 @@ export default class UsersController extends BaseController {
   }
 
   async markNotificationAsRead(c) {
-    const { notifId } = c.req.param();
+    const { id } = c.req.param();
     try {
-      const data = await this.notificationsModel.findByPk(notifId);
+      const data = await this.notificationsModel.findByPk(id);
       await data.update({ read: true });
       return c.json(data);
     } catch (error) {
