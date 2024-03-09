@@ -35,6 +35,18 @@ export default class UsersRouter {
       this.clerkMiddleware,
       this.controller.syncUser.bind(this.controller)
     );
+    router.post(
+      "/notifications",
+      this.controller.createNotification.bind(this.controller)
+    );
+    router.put(
+      "/notifications/read/:notificationId",
+      this.controller.markNotificationAsRead.bind(this.controller)
+    );
+    router.get(
+      "/notifications/:userId",
+      this.controller.getNotifications.bind(this.controller)
+    );
     router.put("/:userId", this.controller.updateUser.bind(this.controller));
     return router;
   }

@@ -1,6 +1,6 @@
 "use strict";
 import BaseController from "./baseController";
-import { Op } from "sequelize";
+import { Op, literal } from "sequelize";
 
 export default class ActivitiesController extends BaseController {
   constructor(
@@ -25,11 +25,15 @@ export default class ActivitiesController extends BaseController {
       const data = await this.model.findAll({
         where: {
           hostId: { [Op.ne]: currentUserId },
-          eventDate: {
-            [Op.gt]: new Date(),
-          },
-          "$participants.userId$": {
-            [Op.or]: [null, { [Op.ne]: currentUserId }],
+          eventDate: { [Op.gt]: new Date() },
+          // "$participants.userId$": {
+          //   [Op.or]: [null, { [Op.ne]: currentUserId }],
+          // },
+          id: {
+            [Op.notIn]: literal(
+              `(SELECT "activityId" FROM "participants"
+              WHERE "userId" = ${currentUserId})`
+            ),
           },
         },
         order: [["eventDate", "ASC"]],
@@ -37,8 +41,8 @@ export default class ActivitiesController extends BaseController {
           this.usersModel,
           this.categoriesModel,
           this.locationsModel,
-          this.participantsModel,
           this.groupSizesModel,
+          this.participantsModel,
         ],
       });
       return c.json(data);
@@ -57,7 +61,7 @@ export default class ActivitiesController extends BaseController {
           this.locationsModel,
           {
             model: this.participantsModel,
-            include: [this.usersModel],
+            include: this.usersModel,
           },
         ],
       });
@@ -67,44 +71,66 @@ export default class ActivitiesController extends BaseController {
     }
   }
 
-  async getAllPastByAccOwner(c) {
-    const { currentUserId } = c.req.param();
+  async getAllPast(c) {
+    const { userId } = c.req.param();
     try {
       const events = await this.model.findAll({
         attributes: ["id"],
         where: {
           [Op.or]: [
-            { hostId: currentUserId },
-            {
-              "$participants.userId$": currentUserId,
-              "$participants.status$": true,
-            },
+            { hostId: userId },
+            literal(`EXISTS (
+            SELECT FROM "participants"
+            WHERE "participants"."activityId" = "activities"."id"
+            AND "participants"."userId" = ${userId}
+            AND "participants"."status" = true
+            )`),
           ],
           eventDate: { [Op.lt]: new Date() },
         },
-        //must include a set data, if not the code will not work.
+        order: [["eventDate", "ASC"]],
         include: [
           {
             model: this.participantsModel,
+            include: this.usersModel,
+            where: { status: true },
+            required: true, //false if you wanna include activities where host is all by herself and no one joined
           },
+          this.locationsModel,
+          this.usersModel,
+          this.categoriesModel,
         ],
       });
-      console.log("Events:", events);
+      return c.json(data);
+    } catch (error) {
+      return c.status(500).json({ error: true, msg: error.message });
+    }
+  }
 
-      // extract event IDs from the events
-      const eventIds = events.map((event) => event.id);
-      console.log("Event IDs:", eventIds);
-
-      // fetch information of events
+  async getAllJoinedByUser(c) {
+    const { currentUserId } = c.req.param();
+    try {
       const data = await this.model.findAll({
-        where: { id: eventIds }, // filter by the extracted event IDs
+        where: {
+          eventDate: {
+            [Op.gt]: new Date(),
+          },
+          "$participants.userId$": currentUserId,
+          "$participants.status$": true,
+        },
+        order: [["eventDate", "ASC"]],
         include: [
           this.locationsModel,
-          { model: this.participantsModel, include: this.usersModel },
+          this.participantsModel,
+          {
+            model: this.participantsModel,
+            where: { status: true },
+            include: [this.usersModel],
+          },
+          this.usersModel,
+          this.categoriesModel,
         ],
       });
-      console.log("Data:", data);
-
       return c.json(data);
     } catch (error) {
       return c.status(500).json({ error: true, msg: error.message });
@@ -127,7 +153,6 @@ export default class ActivitiesController extends BaseController {
         groupSizeId,
         selectedCategoryIds,
       } = await c.req.json();
-
       const data = await this.model.create({
         hostId,
         title,
@@ -276,30 +301,6 @@ export default class ActivitiesController extends BaseController {
           this.locationsModel,
           this.groupSizesModel,
           this.categoriesModel,
-        ],
-      });
-      return c.json(data);
-    } catch (error) {
-      return c.status(500).json({ error: true, msg: error.message });
-    }
-  }
-
-  async getAllJoinedByHost(c) {
-    const { currentUserId } = c.req.param();
-    try {
-      const data = await this.model.findAll({
-        where: {
-          eventDate: {
-            [Op.gt]: new Date(),
-          },
-          "$participants.userId$": currentUserId,
-        },
-        order: [["eventDate", "ASC"]],
-        include: [
-          this.usersModel,
-          this.categoriesModel,
-          this.locationsModel,
-          this.participantsModel,
         ],
       });
       return c.json(data);
