@@ -3,10 +3,11 @@ import BaseController from "./baseController";
 import { clerkClient } from "@clerk/clerk-sdk-node";
 
 export default class UsersController extends BaseController {
-  constructor(model, locationsModel, followingsModel) {
+  constructor(model, locationsModel, followingsModel, notificationsModel) {
     super(model);
     this.locationsModel = locationsModel;
     this.followingsModel = followingsModel;
+    this.notificationsModel = notificationsModel;
   }
 
   async getOne(c) {
@@ -96,6 +97,45 @@ export default class UsersController extends BaseController {
         where: { userId },
         include: this.model,
       });
+      return c.json(data);
+    } catch (error) {
+      return c.status(500).json({ error: true, msg: error.message });
+    }
+  }
+
+  async getNotifications(c) {
+    const { userId } = c.req.param();
+    try {
+      const data = await this.notificationsModel.findAll({
+        where: { recipientId: userId },
+        order: [["createdAt", "DESC"]],
+      });
+      return c.json(data);
+    } catch (error) {
+      return c.status(500).json({ error: true, msg: error.message });
+    }
+  }
+
+  async addNotification(c) {
+    try {
+      const { recipientId, senderId, notifId } = await c.req.json();
+      const data = await this.notificationsModel.create({
+        recipientId,
+        senderId,
+        notifId,
+        read: false,
+      });
+      return c.json(data);
+    } catch (error) {
+      return c.status(500).json({ error: true, msg: error.message });
+    }
+  }
+
+  async markNotificationAsRead(c) {
+    const { notifId } = c.req.param();
+    try {
+      const data = await this.notificationsModel.findByPk(notifId);
+      await data.update({ read: true });
       return c.json(data);
     } catch (error) {
       return c.status(500).json({ error: true, msg: error.message });

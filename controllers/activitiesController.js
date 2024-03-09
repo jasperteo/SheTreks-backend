@@ -115,7 +115,6 @@ export default class ActivitiesController extends BaseController {
         groupSizeId,
         selectedCategoryIds,
       } = await c.req.json();
-
       const data = await this.model.create({
         hostId,
         title,

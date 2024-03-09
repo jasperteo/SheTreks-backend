@@ -13,6 +13,7 @@ const {
   followings,
   categories,
   group_sizes,
+  notifications,
 } = db;
 
 //importing Controllers
@@ -26,7 +27,12 @@ import LocationsRouter from "./routers/locationsRouter";
 import ActivitiesRouter from "./routers/activitiesRouter";
 
 //initializing Controllers
-const usersController = new UsersController(users, locations, followings);
+const usersController = new UsersController(
+  users,
+  locations,
+  followings,
+  notifications
+);
 const locationsController = new LocationsController(locations);
 const activitiesController = new ActivitiesController(
   activities,
