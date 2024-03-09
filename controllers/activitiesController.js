@@ -69,9 +69,9 @@ export default class ActivitiesController extends BaseController {
 
   async getAllPastByAccOwner(c) {
     const { currentUserId } = c.req.param();
-
     try {
-      const data = await this.model.findAll({
+      const events = await this.model.findAll({
+        attributes: ["id"],
         where: {
           [Op.or]: [
             { hostId: currentUserId },
@@ -79,34 +79,31 @@ export default class ActivitiesController extends BaseController {
               "$participants.userId$": currentUserId,
               "$participants.status$": true,
             },
-            // to include participants who joined user in user's joined event
-            {
-              "$participants.userId$": { [Op.not]: currentUserId },
-              "$participants.status$": true,
-            },
           ],
           eventDate: { [Op.lt]: new Date() },
         },
+        //must include a set data, if not the code will not work.
         include: [
-          { model: this.locationsModel, attributes: ["city", "country"] },
-          { model: this.participantsModel, attributes: ["userId"] },
           {
             model: this.participantsModel,
-            where: { status: true },
-            include: [
-              {
-                model: this.usersModel,
-                attributes: ["username", "firstName", "imageUrl"],
-              },
-            ],
           },
-          {
-            model: this.usersModel,
-            attributes: ["username", "firstName", "imageUrl"],
-          },
-          { model: this.categoriesModel, attributes: ["id", "categoryName"] },
         ],
       });
+      console.log("Events:", events);
+
+      // extract event IDs from the events
+      const eventIds = events.map((event) => event.id);
+      console.log("Event IDs:", eventIds);
+
+      // fetch information of events
+      const data = await this.model.findAll({
+        where: { id: eventIds }, // filter by the extracted event IDs
+        include: [
+          this.locationsModel,
+          { model: this.participantsModel, include: this.usersModel },
+        ],
+      });
+      console.log("Data:", data);
 
       return c.json(data);
     } catch (error) {
