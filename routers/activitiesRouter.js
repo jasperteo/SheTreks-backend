@@ -24,8 +24,8 @@ export default class ActivitiesRouter {
       this.controller.getAllByHost.bind(this.controller)
     );
     router.get(
-      "/past/includeHost/:currentUserId/",
-      this.controller.getAllPastByAccOwner.bind(this.controller)
+      "/past/:userId",
+      this.controller.getAllPast.bind(this.controller)
     );
     router.get(
       "/categories",

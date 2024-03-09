@@ -1,6 +1,6 @@
 "use strict";
 import BaseController from "./baseController";
-import { Op } from "sequelize";
+import { Op, literal } from "sequelize";
 
 export default class ActivitiesController extends BaseController {
   constructor(
@@ -25,11 +25,15 @@ export default class ActivitiesController extends BaseController {
       const data = await this.model.findAll({
         where: {
           hostId: { [Op.ne]: currentUserId },
-          eventDate: {
-            [Op.gt]: new Date(),
-          },
-          "$participants.userId$": {
-            [Op.or]: [null, { [Op.ne]: currentUserId }],
+          eventDate: { [Op.gt]: new Date() },
+          // "$participants.userId$": {
+          //   [Op.or]: [null, { [Op.ne]: currentUserId }],
+          // },
+          id: {
+            [Op.notIn]: literal(
+              `(SELECT "activityId" FROM "participants"
+              WHERE "userId" = ${currentUserId})`
+            ),
           },
         },
         order: [["eventDate", "ASC"]],
@@ -37,8 +41,8 @@ export default class ActivitiesController extends BaseController {
           this.usersModel,
           this.categoriesModel,
           this.locationsModel,
-          this.participantsModel,
           this.groupSizesModel,
+          this.participantsModel,
         ],
       });
       return c.json(data);
@@ -57,7 +61,7 @@ export default class ActivitiesController extends BaseController {
           this.locationsModel,
           {
             model: this.participantsModel,
-            include: [this.usersModel],
+            include: this.usersModel,
           },
         ],
       });
@@ -67,47 +71,65 @@ export default class ActivitiesController extends BaseController {
     }
   }
 
-  async getAllPastByAccOwner(c) {
-    const { currentUserId } = c.req.param();
-
+  async getAllPast(c) {
+    const { userId } = c.req.param();
     try {
       const data = await this.model.findAll({
         where: {
           [Op.or]: [
-            { hostId: currentUserId },
-            {
-              "$participants.userId$": currentUserId,
-              "$participants.status$": true,
-            },
-            // to include participants who joined user in user's joined event
-            {
-              "$participants.userId$": { [Op.not]: currentUserId },
-              "$participants.status$": true,
-            },
+            { hostId: userId },
+            literal(`EXISTS (
+            SELECT FROM "participants"
+            WHERE "participants"."activityId" = "activities"."id"
+            AND "participants"."userId" = ${userId}
+            AND "participants"."status" = true
+            )`),
           ],
           eventDate: { [Op.lt]: new Date() },
         },
+        order: [["eventDate", "ASC"]],
         include: [
-          { model: this.locationsModel, attributes: ["city", "country"] },
-          { model: this.participantsModel, attributes: ["userId"] },
+          {
+            model: this.participantsModel,
+            include: this.usersModel,
+            where: { status: true },
+            required: true, //false if you wanna include activities where host is all by herself and no one joined
+          },
+          this.locationsModel,
+          this.usersModel,
+          this.categoriesModel,
+        ],
+      });
+      return c.json(data);
+    } catch (error) {
+      return c.status(500).json({ error: true, msg: error.message });
+    }
+  }
+
+  async getAllJoinedByUser(c) {
+    const { currentUserId } = c.req.param();
+    try {
+      const data = await this.model.findAll({
+        where: {
+          eventDate: {
+            [Op.gt]: new Date(),
+          },
+          "$participants.userId$": currentUserId,
+          "$participants.status$": true,
+        },
+        order: [["eventDate", "ASC"]],
+        include: [
+          this.locationsModel,
+          this.participantsModel,
           {
             model: this.participantsModel,
             where: { status: true },
-            include: [
-              {
-                model: this.usersModel,
-                attributes: ["username", "firstName", "imageUrl"],
-              },
-            ],
+            include: [this.usersModel],
           },
-          {
-            model: this.usersModel,
-            attributes: ["username", "firstName", "imageUrl"],
-          },
-          { model: this.categoriesModel, attributes: ["id", "categoryName"] },
+          this.usersModel,
+          this.categoriesModel,
         ],
       });
-
       return c.json(data);
     } catch (error) {
       return c.status(500).json({ error: true, msg: error.message });
@@ -130,7 +152,6 @@ export default class ActivitiesController extends BaseController {
         groupSizeId,
         selectedCategoryIds,
       } = await c.req.json();
-
       const data = await this.model.create({
         hostId,
         title,
@@ -278,36 +299,6 @@ export default class ActivitiesController extends BaseController {
         include: [
           this.locationsModel,
           this.groupSizesModel,
-          this.categoriesModel,
-        ],
-      });
-      return c.json(data);
-    } catch (error) {
-      return c.status(500).json({ error: true, msg: error.message });
-    }
-  }
-
-  async getAllJoinedByUser(c) {
-    const { currentUserId } = c.req.param();
-    try {
-      const data = await this.model.findAll({
-        where: {
-          eventDate: {
-            [Op.gt]: new Date(),
-          },
-          "$participants.userId$": currentUserId,
-          "$participants.status$": true,
-        },
-        order: [["eventDate", "ASC"]],
-        include: [
-          this.locationsModel,
-          this.participantsModel,
-          {
-            model: this.participantsModel,
-            where: { status: true },
-            include: [this.usersModel],
-          },
-          this.usersModel,
           this.categoriesModel,
         ],
       });
