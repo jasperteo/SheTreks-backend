@@ -65,22 +65,23 @@ export default class ActivitiesController extends BaseController {
     }
   }
 
-  async getAllPastByAccOwner(c) {
-    const { currentUserId } = c.req.param();
+  async getAllPast(c) {
+    const { userId } = c.req.param();
     try {
       const data = await this.model.findAll({
         where: {
           [Op.or]: [
-            { hostId: currentUserId },
+            { hostId: userId },
             literal(`EXISTS (
             SELECT FROM "participants"
             WHERE "participants"."activityId" = "activities"."id"
-            AND "participants"."userId" = ${currentUserId}
+            AND "participants"."userId" = ${userId}
             AND "participants"."status" = true
             )`),
           ],
           eventDate: { [Op.lt]: new Date() },
         },
+        order: [["eventDate", "ASC"]],
         include: [
           {
             model: this.participantsModel,
@@ -89,6 +90,36 @@ export default class ActivitiesController extends BaseController {
             required: true, //false if you wanna include activities where host is all by herself and no one joined
           },
           this.locationsModel,
+          this.usersModel,
+          this.categoriesModel,
+        ],
+      });
+      return c.json(data);
+    } catch (error) {
+      return c.status(500).json({ error: true, msg: error.message });
+    }
+  }
+
+  async getAllJoinedByUser(c) {
+    const { currentUserId } = c.req.param();
+    try {
+      const data = await this.model.findAll({
+        where: {
+          eventDate: {
+            [Op.gt]: new Date(),
+          },
+          "$participants.userId$": currentUserId,
+          "$participants.status$": true,
+        },
+        order: [["eventDate", "ASC"]],
+        include: [
+          this.locationsModel,
+          this.participantsModel,
+          {
+            model: this.participantsModel,
+            where: { status: true },
+            include: [this.usersModel],
+          },
           this.usersModel,
           this.categoriesModel,
         ],
@@ -262,36 +293,6 @@ export default class ActivitiesController extends BaseController {
         include: [
           this.locationsModel,
           this.groupSizesModel,
-          this.categoriesModel,
-        ],
-      });
-      return c.json(data);
-    } catch (error) {
-      return c.status(500).json({ error: true, msg: error.message });
-    }
-  }
-
-  async getAllJoinedByUser(c) {
-    const { currentUserId } = c.req.param();
-    try {
-      const data = await this.model.findAll({
-        where: {
-          eventDate: {
-            [Op.gt]: new Date(),
-          },
-          "$participants.userId$": currentUserId,
-          "$participants.status$": true,
-        },
-        order: [["eventDate", "ASC"]],
-        include: [
-          this.locationsModel,
-          this.participantsModel,
-          {
-            model: this.participantsModel,
-            where: { status: true },
-            include: [this.usersModel],
-          },
-          this.usersModel,
           this.categoriesModel,
         ],
       });

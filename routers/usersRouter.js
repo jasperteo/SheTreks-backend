@@ -41,7 +41,7 @@ export default class UsersRouter {
     );
     router.put(
       "/notifications/read/:notificationId",
-      this.controller.updateNotification.bind(this.controller)
+      this.controller.markNotificationAsRead.bind(this.controller)
     );
     router.get(
       "/notifications/:userId",
