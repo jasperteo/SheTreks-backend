@@ -75,6 +75,7 @@ export default class ActivitiesController extends BaseController {
     const { userId } = c.req.param();
     try {
       const data = await this.model.findAll({
+        attributes: ["id", "description", "eventDate", "hostId", "title"],
         where: {
           [Op.or]: [
             { hostId: userId },
@@ -91,13 +92,61 @@ export default class ActivitiesController extends BaseController {
         include: [
           {
             model: this.participantsModel,
-            include: this.usersModel,
+            include: {
+              model: this.usersModel,
+              attributes: ["id", "firstName", "username", "imageUrl"],
+            },
             where: { status: true },
             required: true, //false if you wanna include activities where host is all by herself and no one joined
           },
-          this.locationsModel,
-          this.usersModel,
-          this.categoriesModel,
+          { model: this.locationsModel, attributes: ["city", "country"] },
+          {
+            model: this.usersModel,
+            attributes: ["id", "firstName", "username", "imageUrl"],
+          },
+          { model: this.categoriesModel, attributes: ["categoryName", "id"] },
+        ],
+      });
+      return c.json(data);
+    } catch (error) {
+      return c.status(500).json({ error: true, msg: error.message });
+    }
+  }
+
+  async getAllCurrent(c) {
+    const { userId } = c.req.param();
+    try {
+      const data = await this.model.findAll({
+        attributes: ["id", "description", "eventDate", "hostId", "title"],
+        where: {
+          [Op.or]: [
+            { hostId: userId },
+            literal(`EXISTS (
+            SELECT FROM "participants"
+            WHERE "participants"."activityId" = "activities"."id"
+            AND "participants"."userId" = ${userId}
+            AND "participants"."status" = true
+            )`),
+          ],
+          eventDate: { [Op.gt]: new Date() },
+        },
+        order: [["eventDate", "ASC"]],
+        include: [
+          {
+            model: this.participantsModel,
+            include: {
+              model: this.usersModel,
+              attributes: ["id", "firstName", "username", "imageUrl"],
+            },
+            // where: { status: true }, // true if you only want to show events if there are truthy participants
+            required: true, //false if you wanna include activities where host is all by herself and no one joined
+          },
+          { model: this.locationsModel, attributes: ["city", "country"] },
+          {
+            model: this.usersModel,
+            attributes: ["id", "firstName", "username", "imageUrl"],
+          },
+          { model: this.categoriesModel, attributes: ["categoryName", "id"] },
         ],
       });
       return c.json(data);

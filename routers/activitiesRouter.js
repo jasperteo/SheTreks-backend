@@ -28,6 +28,10 @@ export default class ActivitiesRouter {
       this.controller.getAllPast.bind(this.controller)
     );
     router.get(
+      "/current/:userId",
+      this.controller.getAllCurrent.bind(this.controller)
+    );
+    router.get(
       "/categories",
       this.controller.getAllCategories.bind(this.controller)
     );
