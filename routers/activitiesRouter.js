@@ -16,11 +16,11 @@ export default class ActivitiesRouter {
       this.controller.searchActivities.bind(this.controller)
     );
     router.get(
-      "/excludeHost/:currentUserId",
+      "/excludeHost/:userId",
       this.controller.getAllExcludeHost.bind(this.controller)
     );
     router.get(
-      "/includeHost/:currentUserId",
+      "/includeHost/:userId",
       this.controller.getAllByHost.bind(this.controller)
     );
     router.get(
@@ -30,6 +30,14 @@ export default class ActivitiesRouter {
     router.get(
       "/current/:userId",
       this.controller.getAllCurrent.bind(this.controller)
+    );
+    router.get(
+      "/joinedByUser/:userId",
+      this.controller.getAllJoinedByUser.bind(this.controller)
+    );
+    router.get(
+      "/feed/:userId",
+      this.controller.getAllFollowing.bind(this.controller)
     );
     router.get(
       "/categories",
@@ -62,10 +70,6 @@ export default class ActivitiesRouter {
     router.get(
       "/:activityId/participants/confirmed",
       this.controller.getAllConfirmedParticipants.bind(this.controller)
-    );
-    router.get(
-      "/joinedByUser/:currentUserId",
-      this.controller.getAllJoinedByUser.bind(this.controller)
     );
 
     return router;

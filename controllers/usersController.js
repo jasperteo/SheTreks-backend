@@ -28,6 +28,7 @@ export default class UsersController extends BaseController {
     try {
       const [user] = await this.model.findOrCreate({
         where: { clerkUid },
+        include: this.locationsModel,
       });
       const clerkUser = await clerkClient.users.getUser(clerkUid);
       await user.update({
