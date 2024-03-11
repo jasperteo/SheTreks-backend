@@ -12,10 +12,19 @@ module.exports = (sequelize, DataTypes) => {
       this.belongsTo(models.locations, { foreignKey: "locationId" });
       this.hasMany(models.activities, { foreignKey: "hostId" });
       this.hasMany(models.participants, { foreignKey: "userId" });
-      this.hasMany(models.followings, { foreignKey: "userId" });
-      this.hasMany(models.followings, { foreignKey: "toFollowId" });
-      this.hasMany(models.notifications, { foreignKey: "recipientId" });
-      this.hasMany(models.notifications, { foreignKey: "senderId" });
+      this.hasMany(models.followings, { as: "user", foreignKey: "userId" });
+      this.hasMany(models.followings, {
+        as: "toFollow",
+        foreignKey: "toFollowId",
+      });
+      this.hasMany(models.notifications, {
+        as: "recipient",
+        foreignKey: "recipientId",
+      });
+      this.hasMany(models.notifications, {
+        as: "sender",
+        foreignKey: "senderId",
+      });
       this.hasMany(models.chatroom_members, { foreignKey: "userId" });
       this.hasMany(models.chatroom_messages, { foreignKey: "senderId" });
     }

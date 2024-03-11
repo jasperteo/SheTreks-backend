@@ -82,7 +82,7 @@ export default class UsersController extends BaseController {
     try {
       const data = await this.followingsModel.findAndCountAll({
         where: { toFollowId },
-        include: this.model,
+        include: [{ model: this.model, as: "user" }],
       });
       return c.json(data);
     } catch (error) {
@@ -95,7 +95,7 @@ export default class UsersController extends BaseController {
     try {
       const data = await this.followingsModel.findAndCountAll({
         where: { userId },
-        include: this.model,
+        include: [{ model: this.model, as: "toFollow" }],
       });
       return c.json(data);
     } catch (error) {
@@ -109,6 +109,7 @@ export default class UsersController extends BaseController {
       const data = await this.notificationsModel.findAll({
         where: { recipientId: userId },
         order: [["createdAt", "DESC"]],
+        include: [{ model: this.model, as: "sender" }],
       });
       return c.json(data);
     } catch (error) {
