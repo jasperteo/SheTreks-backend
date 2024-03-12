@@ -9,7 +9,10 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      this.belongsToMany(models.activities, { through: "activity_categories" });
+      this.belongsToMany(models.activities, {
+        onDelete: "CASCADE",
+        through: "activity_categories",
+      });
     }
   }
   categories.init(
