@@ -14,7 +14,6 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: "recipientId",
       });
       this.belongsTo(models.users, { as: "sender", foreignKey: "senderId" });
-      this.belongsTo(models.notification_types, { foreignKey: "notifId" });
     }
   }
   notifications.init(
@@ -33,13 +32,7 @@ module.exports = (sequelize, DataTypes) => {
           key: "id",
         },
       },
-      notifId: {
-        type: DataTypes.INTEGER,
-        references: {
-          model: "notification_types",
-          key: "id",
-        },
-      },
+      notifId: DataTypes.STRING,
       read: DataTypes.BOOLEAN,
     },
     {

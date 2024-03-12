@@ -23,12 +23,8 @@ module.exports = {
           key: "id",
         },
       },
-      notifId: {
-        type: Sequelize.INTEGER,
-        references: {
-          model: "notification_types",
-          key: "id",
-        },
+      notifMessage: {
+        type: Sequelize.STRING,
       },
       read: {
         type: Sequelize.BOOLEAN,
