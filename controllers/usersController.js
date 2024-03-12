@@ -120,11 +120,11 @@ export default class UsersController extends BaseController {
 
   async createNotification(c) {
     try {
-      const { recipientId, senderId, notifId } = await c.req.json();
+      const { recipientId, senderId, notifMessage } = await c.req.json();
       const data = await this.notificationsModel.create({
         recipientId,
         senderId,
-        notifId,
+        notifMessage,
         read: false,
       });
       return c.json(data);
