@@ -265,6 +265,7 @@ export default class ActivitiesController extends BaseController {
         include: [
           this.locationsModel,
           { model: this.participantsModel, include: this.usersModel },
+          this.groupSizesModel,
         ],
       });
       return c.json(data);
