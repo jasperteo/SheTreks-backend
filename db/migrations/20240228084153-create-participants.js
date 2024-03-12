@@ -15,6 +15,7 @@ module.exports = {
           model: "activities",
           key: "id",
         },
+        onDelete: "CASCADE",
       },
       userId: {
         type: Sequelize.INTEGER,

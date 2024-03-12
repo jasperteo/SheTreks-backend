@@ -13,10 +13,7 @@ module.exports = (sequelize, DataTypes) => {
       this.belongsTo(models.users, { foreignKey: "hostId" });
       this.belongsTo(models.locations, { foreignKey: "locationId" });
       this.belongsTo(models.group_sizes, { foreignKey: "groupSizeId" });
-      this.hasMany(models.participants, {
-        onDelete: "CASCADE",
-        foreignKey: "activityId",
-      });
+      this.hasMany(models.participants, { foreignKey: "activityId" });
     }
   }
   activities.init(

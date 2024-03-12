@@ -15,6 +15,7 @@ module.exports = {
           model: "activities",
           key: "id",
         },
+        onDelete: "CASCADE",
       },
       categoryId: {
         type: Sequelize.INTEGER,
