@@ -13,15 +13,7 @@ module.exports = (sequelize, DataTypes) => {
       this.belongsTo(models.users, { foreignKey: "hostId" });
       this.belongsTo(models.locations, { foreignKey: "locationId" });
       this.belongsTo(models.group_sizes, { foreignKey: "groupSizeId" });
-<<<<<<< HEAD
       this.hasMany(models.participants, { foreignKey: "activityId" });
-=======
-      this.hasMany(models.participants, {
-        onDelete: "CASCADE",
-        hooks: true,
-        foreignKey: "activityId",
-      });
->>>>>>> b45c07b (saving before merge)
     }
   }
   activities.init(
