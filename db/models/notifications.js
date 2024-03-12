@@ -32,7 +32,7 @@ module.exports = (sequelize, DataTypes) => {
           key: "id",
         },
       },
-      notifId: DataTypes.STRING,
+      notifMessage: DataTypes.STRING,
       read: DataTypes.BOOLEAN,
     },
     {
