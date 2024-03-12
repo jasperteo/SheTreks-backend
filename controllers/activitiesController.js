@@ -264,8 +264,8 @@ export default class ActivitiesController extends BaseController {
       const data = await this.model.findByPk(activityId, {
         include: [
           this.locationsModel,
-          { model: this.participantsModel, include: this.usersModel },
           this.groupSizesModel,
+          { model: this.participantsModel, include: this.usersModel },
         ],
       });
       return c.json(data);
