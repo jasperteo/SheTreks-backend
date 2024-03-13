@@ -134,9 +134,10 @@ export default class UsersController extends BaseController {
   }
 
   async markNotificationAsRead(c) {
-    const { id } = c.req.param();
+    const { notificationId } = c.req.param();
+    console.log("id", notificationId);
     try {
-      const data = await this.notificationsModel.findByPk(id);
+      const data = await this.notificationsModel.findByPk(notificationId);
       await data.update({ read: true });
       return c.json(data);
     } catch (error) {
