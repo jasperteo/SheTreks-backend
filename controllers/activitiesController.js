@@ -391,4 +391,15 @@ export default class ActivitiesController extends BaseController {
       return c.status(500).json({ error: true, msg: error.message });
     }
   }
+
+  async withdrawFromActivity(c) {
+    const { participantId } = c.req.param();
+    try {
+      const data = await this.participantsModel.findByPk(participantId);
+      await data.destroy();
+      return c.json(data);
+    } catch (error) {
+      return c.status(500).json({ error: true, msg: error.message });
+    }
+  }
 }
