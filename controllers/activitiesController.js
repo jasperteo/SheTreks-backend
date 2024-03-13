@@ -394,7 +394,6 @@ export default class ActivitiesController extends BaseController {
 
   async withdrawFromActivity(c) {
     const { participantId } = c.req.param();
-    console.log("participant", participantId);
     try {
       const data = await this.participantsModel.findByPk(participantId);
       await data.destroy();
