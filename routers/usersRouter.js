@@ -3,9 +3,8 @@ import { Hono } from "hono";
 const router = new Hono();
 
 export default class UsersRouter {
-  constructor(controller, clerkMiddleware) {
+  constructor(controller) {
     this.controller = controller;
-    this.clerkMiddleware = clerkMiddleware;
   }
 
   route() {
@@ -32,7 +31,6 @@ export default class UsersRouter {
     );
     router.get(
       "/sync/:clerkUid",
-      this.clerkMiddleware,
       this.controller.syncUser.bind(this.controller)
     );
     router.post(
@@ -48,6 +46,7 @@ export default class UsersRouter {
       this.controller.getNotifications.bind(this.controller)
     );
     router.put("/:userId", this.controller.updateUser.bind(this.controller));
+
     return router;
   }
 }

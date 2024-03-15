@@ -44,18 +44,18 @@ const activitiesController = new ActivitiesController(
 );
 
 //initializing Routers
-const usersRouter = new UsersRouter(usersController, clerkMiddleware()).route();
+const usersRouter = new UsersRouter(usersController).route();
 const locationsRouter = new LocationsRouter(locationsController).route();
-const activitiesRouter = new ActivitiesRouter(
-  activitiesController,
-  clerkMiddleware()
-).route();
+const activitiesRouter = new ActivitiesRouter(activitiesController).route();
 
 const PORT = process.env.PORT;
 const app = new Hono();
 
 //implement cors midddleware on any method, all routes
 app.use(cors());
+
+//implementing clerk middleware
+app.use("*", clerkMiddleware());
 
 //implementing routers
 app.route("/users", usersRouter);

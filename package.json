@@ -1,6 +1,7 @@
 {
   "name": "shetreks-backend",
   "module": "index.js",
+  "license": "MIT",
   "scripts": {
     "start": "bun --hot run index.js"
   },

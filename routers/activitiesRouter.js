@@ -3,9 +3,8 @@ import { Hono } from "hono";
 const router = new Hono();
 
 export default class ActivitiesRouter {
-  constructor(controller, clerkMiddleware) {
+  constructor(controller) {
     this.controller = controller;
-    this.clerkMiddleware = clerkMiddleware;
   }
 
   route() {
