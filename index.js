@@ -1,7 +1,7 @@
 "use strict";
 import { Hono } from "hono";
-import { cors } from "hono/cors";
 import { clerkMiddleware } from "@hono/clerk-auth";
+import { cors } from "hono/cors";
 
 // importing DB
 import db from "./db/models/index";
@@ -51,11 +51,18 @@ const activitiesRouter = new ActivitiesRouter(activitiesController).route();
 const PORT = process.env.PORT;
 const app = new Hono();
 
-//implement cors midddleware on any method, all routes
+//implement cors midddleware to allow all origins
 app.use(cors());
 
 //implementing clerk middleware
-app.use("*", clerkMiddleware());
+app.use(clerkMiddleware());
+app.use(async (c, next) => {
+  const auth = c.get("clerkAuth");
+  if (!auth.userId) {
+    return c.json({ message: "You are unauthenticated" }, 401);
+  }
+  await next();
+});
 
 //implementing routers
 app.route("/users", usersRouter);

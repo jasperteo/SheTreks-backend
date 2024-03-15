@@ -47,7 +47,7 @@ export default class ActivitiesController extends BaseController {
       });
       return c.json(data);
     } catch (error) {
-      return c.status(500).json({ error: true, msg: error.message });
+      return c.json({ message: error.message }, 500);
     }
   }
 
@@ -70,7 +70,7 @@ export default class ActivitiesController extends BaseController {
       });
       return c.json(data);
     } catch (error) {
-      return c.status(500).json({ error: true, msg: error.message });
+      return c.json({ message: error.message }, 500);
     }
   }
 
@@ -106,7 +106,7 @@ export default class ActivitiesController extends BaseController {
       });
       return c.json(data);
     } catch (error) {
-      return c.status(500).json({ error: true, msg: error.message });
+      return c.json({ message: error.message }, 500);
     }
   }
 
@@ -140,7 +140,7 @@ export default class ActivitiesController extends BaseController {
       });
       return c.json(data);
     } catch (error) {
-      return c.status(500).json({ error: true, msg: error.message });
+      return c.json({ message: error.message }, 500);
     }
   }
 
@@ -171,7 +171,7 @@ export default class ActivitiesController extends BaseController {
       });
       return c.json(data);
     } catch (error) {
-      return c.status(500).json({ error: true, msg: error.message });
+      return c.json({ message: error.message }, 500);
     }
   }
 
@@ -215,7 +215,7 @@ export default class ActivitiesController extends BaseController {
       });
       return c.json(data);
     } catch (error) {
-      return c.status(500).json({ error: true, msg: error.message });
+      return c.json({ message: error.message }, 500);
     }
   }
 
@@ -254,7 +254,7 @@ export default class ActivitiesController extends BaseController {
       await data.setCategories(selectedCategories);
       return c.json(data);
     } catch (error) {
-      return c.status(500).json({ error: true, msg: error.message });
+      return c.json({ message: error.message }, 500);
     }
   }
 
@@ -270,7 +270,7 @@ export default class ActivitiesController extends BaseController {
       });
       return c.json(data);
     } catch (error) {
-      return c.status(500).json({ error: true, msg: error.message });
+      return c.json({ message: error.message }, 500);
     }
   }
 
@@ -281,7 +281,7 @@ export default class ActivitiesController extends BaseController {
       await data.destroy();
       return c.json(data);
     } catch (error) {
-      return c.status(500).json({ error: true, msg: error.message });
+      return c.json({ message: error.message }, 500);
     }
   }
 
@@ -290,7 +290,7 @@ export default class ActivitiesController extends BaseController {
       const data = await this.categoriesModel.findAll();
       return c.json(data);
     } catch (error) {
-      return c.status(500).json({ error: true, msg: error.message });
+      return c.json({ message: error.message }, 500);
     }
   }
 
@@ -299,7 +299,7 @@ export default class ActivitiesController extends BaseController {
       const data = await this.groupSizesModel.findAll();
       return c.json(data);
     } catch (error) {
-      return c.status(500).json({ error: true, msg: error.message });
+      return c.json({ message: error.message }, 500);
     }
   }
 
@@ -314,7 +314,7 @@ export default class ActivitiesController extends BaseController {
       });
       return c.json(data);
     } catch (error) {
-      return c.status(500).json({ error: true, msg: error.message });
+      return c.json({ message: error.message }, 500);
     }
   }
 
@@ -327,7 +327,7 @@ export default class ActivitiesController extends BaseController {
       });
       return c.json(data);
     } catch (error) {
-      return c.status(500).json({ error: true, msg: error.message });
+      return c.json({ message: error.message }, 500);
     }
   }
 
@@ -338,7 +338,7 @@ export default class ActivitiesController extends BaseController {
       await data.update({ status: true });
       return c.json(data);
     } catch (error) {
-      return c.status(500).json({ error: true, msg: error.message });
+      return c.json({ message: error.message }, 500);
     }
   }
 
@@ -349,7 +349,7 @@ export default class ActivitiesController extends BaseController {
       await data.destroy();
       return c.json(data);
     } catch (error) {
-      return c.status(500).json({ error: true, msg: error.message });
+      return c.json({ message: error.message }, 500);
     }
   }
 
@@ -388,7 +388,7 @@ export default class ActivitiesController extends BaseController {
       });
       return c.json(data);
     } catch (error) {
-      return c.status(500).json({ error: true, msg: error.message });
+      return c.json({ message: error.message }, 500);
     }
   }
 }
