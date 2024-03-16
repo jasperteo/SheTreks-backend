@@ -1,3 +1,9 @@
+/**
+ * @file This file serves as the entry point for the SheTreks backend application.
+ * It imports necessary modules, initializes controllers and routers, implements middleware,
+ * and starts the application.
+ * @module index.js
+ */
 "use strict";
 import { Hono } from "hono";
 import { clerkMiddleware } from "@hono/clerk-auth";
