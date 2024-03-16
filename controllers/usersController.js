@@ -1,6 +1,5 @@
 "use strict";
 import BaseController from "./baseController";
-import { clerkClient } from "@clerk/clerk-sdk-node";
 
 export default class UsersController extends BaseController {
   constructor(model, locationsModel, followingsModel, notificationsModel) {
@@ -19,11 +18,12 @@ export default class UsersController extends BaseController {
       });
       return c.json(data);
     } catch (error) {
-      return c.status(500).json({ error: true, msg: error.message });
+      return c.json({ message: error.message }, 500);
     }
   }
 
   async syncUser(c) {
+    const clerkClient = c.get("clerk");
     const { clerkUid } = c.req.param();
     try {
       const [user] = await this.model.findOrCreate({
@@ -40,7 +40,7 @@ export default class UsersController extends BaseController {
       });
       return c.json(user);
     } catch (error) {
-      return c.status(500).json({ error: true, msg: error.message });
+      return c.json({ message: error.message }, 500);
     }
   }
 
@@ -52,7 +52,7 @@ export default class UsersController extends BaseController {
       await data.update({ about, locationId });
       return c.json(data);
     } catch (error) {
-      return c.status(500).json({ error: true, msg: error.message });
+      return c.json({ message: error.message }, 500);
     }
   }
 
@@ -62,7 +62,7 @@ export default class UsersController extends BaseController {
       const data = await this.followingsModel.create({ userId, toFollowId });
       return c.json(data);
     } catch (error) {
-      return c.status(500).json({ error: true, msg: error.message });
+      return c.json({ message: error.message }, 500);
     }
   }
 
@@ -74,7 +74,7 @@ export default class UsersController extends BaseController {
       });
       return c.json(data);
     } catch (error) {
-      return c.status(500).json({ error: true, msg: error.message });
+      return c.json({ message: error.message }, 500);
     }
   }
 
@@ -87,7 +87,7 @@ export default class UsersController extends BaseController {
       });
       return c.json(data);
     } catch (error) {
-      return c.status(500).json({ error: true, msg: error.message });
+      return c.json({ message: error.message }, 500);
     }
   }
 
@@ -100,7 +100,7 @@ export default class UsersController extends BaseController {
       });
       return c.json(data);
     } catch (error) {
-      return c.status(500).json({ error: true, msg: error.message });
+      return c.json({ message: error.message }, 500);
     }
   }
 
@@ -114,7 +114,7 @@ export default class UsersController extends BaseController {
       });
       return c.json(data);
     } catch (error) {
-      return c.status(500).json({ error: true, msg: error.message });
+      return c.json({ message: error.message }, 500);
     }
   }
 
@@ -129,7 +129,7 @@ export default class UsersController extends BaseController {
       });
       return c.json(data);
     } catch (error) {
-      return c.status(500).json({ error: true, msg: error.message });
+      return c.json({ message: error.message }, 500);
     }
   }
 
@@ -140,7 +140,7 @@ export default class UsersController extends BaseController {
       await data.update({ read: true });
       return c.json(data);
     } catch (error) {
-      return c.status(500).json({ error: true, msg: error.message });
+      return c.json({ message: error.message }, 500);
     }
   }
 }

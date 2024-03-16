@@ -9,7 +9,7 @@ export default class BaseController {
       const data = await this.model.findAll();
       return c.json(data);
     } catch (error) {
-      return c.status(500).json({ error: true, msg: error.message });
+      return c.json({ message: error.message }, 500);
     }
   }
 }
