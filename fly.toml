@@ -1,21 +1,21 @@
-# fly.toml app configuration file generated for shetreks-backend on 2024-03-15T15:38:12+08:00
+# fly.toml app configuration file generated for shetreks on 2024-03-17T16:03:38+08:00
 #
 # See https://fly.io/docs/reference/configuration/ for information about how to use this file.
 #
 
-app = 'shetreks-backend'
+app = 'shetreks'
 primary_region = 'sin'
 
 [build]
 
 [deploy]
-  # release_command = "sh ./release.sh"
+  # release_command = "sh /release.sh"
 
 [env]
   PORT = "3000"
   USERNAME = "postgres"
-  DATABASE = "shetreks-backend-db"
-  HOST = "shetreks-backend-db.internal"
+  DATABASE = "shetreks-db"
+  HOST = "shetreks-db.internal"
   DIALECT = "postgres"
   NODE_ENV = "production"
 
