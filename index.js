@@ -6,7 +6,7 @@
  */
 "use strict";
 import { Hono } from "hono";
-import { clerkMiddleware } from "@hono/clerk-auth";
+import { clerkMiddleware, getAuth } from "@hono/clerk-auth";
 import { cors } from "hono/cors";
 
 // importing DB
@@ -63,7 +63,7 @@ app.use(cors());
 //implementing clerk middleware
 app.use(clerkMiddleware());
 app.use(async (c, next) => {
-  const auth = c.get("clerkAuth");
+  const auth = getAuth(c);
   if (!auth.userId) {
     return c.json({ message: "You are unauthenticated" }, 401);
   }
