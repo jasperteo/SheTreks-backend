@@ -2,11 +2,22 @@
 import { Hono } from "hono";
 const router = new Hono();
 
+/**
+ * Represents a router for handling user-related routes.
+ */
 export default class ActivitiesRouter {
+  /**
+   * Creates an instance of ActivitiesRouter.
+   * @param {Object} controller - The controller object for handling acitivity-related operations.
+   */
   constructor(controller) {
     this.controller = controller;
   }
 
+  /**
+   * Routes the activity-related routes to their respective controller methods.
+   * @returns {Object} - The router object.
+   */
   route() {
     router.get("/", this.controller.getAll.bind(this.controller));
     router.post("/", this.controller.createActivity.bind(this.controller));
