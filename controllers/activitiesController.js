@@ -189,14 +189,12 @@ export default class ActivitiesController extends BaseController {
                 )`),
               },
             },
-            {
-              "$participants.userId$": {
-                [Op.in]: literal(`(
-                SELECT "toFollowId" FROM "followings"
-                WHERE "userId" = ${userId}
-                )`),
-              },
-            },
+            literal(`EXISTS (
+            SELECT 1 FROM "participants"
+            WHERE "participants"."activityId" = "activities"."id"
+            AND "participants"."userId"
+            IN (SELECT "toFollowId" FROM "followings"
+            WHERE "userId" = ${userId}))`),
           ],
           eventDate: { [Op.gt]: new Date() },
         },
@@ -367,6 +365,12 @@ export default class ActivitiesController extends BaseController {
       const data = await this.model.findAll({
         where: {
           hostId: { [Op.ne]: currentUserId },
+          "$participants.userId$": {
+            [Op.notIn]: literal(`(
+                SELECT "userId" FROM "participants"
+                WHERE "userId" = ${currentUserId}
+                )`),
+          },
           ...(startDate &&
             endDate && { eventDate: { [Op.between]: [startDate, endDate] } }),
           ...(startDate && !endDate && { eventDate: { [Op.gte]: startDate } }),
@@ -381,9 +385,14 @@ export default class ActivitiesController extends BaseController {
           }),
         },
         include: [
+          {
+            model: this.participantsModel,
+            include: this.usersModel,
+          },
           this.locationsModel,
-          this.groupSizesModel,
+          this.usersModel,
           this.categoriesModel,
+          this.groupSizesModel,
         ],
       });
       return c.json(data);
