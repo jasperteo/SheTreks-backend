@@ -44,10 +44,7 @@ Development Team: [Esther](https://github.com/estherphang), [Iffah](https://gith
 
 ## Contributing
 
-Pull requests are welcome. For major changes, please open an issue first
-to discuss what you would like to change.
-
-Please make sure to update tests as appropriate.
+We encourage and welcome contributions from all members of the community to help improve our project. Whether it's through code contributions, bug reports, feature requests, or documentation enhancements, every contribution is valuable and appreciated.
 
 ## License
 
