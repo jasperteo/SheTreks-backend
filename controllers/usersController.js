@@ -1,7 +1,18 @@
 "use strict";
 import BaseController from "./baseController";
 
+/**
+ * Controller for managing user-related operations.
+ * @extends BaseController
+ */
 export default class UsersController extends BaseController {
+  /**
+   * Creates an instance of UsersController.
+   * @param {Object} model - The user model.
+   * @param {Object} locationsModel - The locations model.
+   * @param {Object} followingsModel - The followings model.
+   * @param {Object} notificationsModel - The notifications model.
+   */
   constructor(model, locationsModel, followingsModel, notificationsModel) {
     super(model);
     this.locationsModel = locationsModel;
@@ -9,6 +20,11 @@ export default class UsersController extends BaseController {
     this.notificationsModel = notificationsModel;
   }
 
+  /**
+   * Retrieves a single user by their username.
+   * @param {Object} c - The context object.
+   * @returns {Object} The user data.
+   */
   async getOne(c) {
     const { username } = c.req.param();
     try {
@@ -22,6 +38,11 @@ export default class UsersController extends BaseController {
     }
   }
 
+  /**
+   * Syncs a user with the provided clerk UID.
+   * @param {Object} c - The context object.
+   * @returns {Object} The synced user data.
+   */
   async syncUser(c) {
     const clerkClient = c.get("clerk");
     const { clerkUid } = c.req.param();
@@ -44,6 +65,11 @@ export default class UsersController extends BaseController {
     }
   }
 
+  /**
+   * Updates a user's information.
+   * @param {Object} c - The context object.
+   * @returns {Object} The updated user data.
+   */
   async updateUser(c) {
     const { userId } = c.req.param();
     try {
@@ -56,6 +82,11 @@ export default class UsersController extends BaseController {
     }
   }
 
+  /**
+   * Follows a user.
+   * @param {Object} c - The context object.
+   * @returns {Object} The created following data.
+   */
   async followUser(c) {
     const { userId, toFollowId } = c.req.param();
     try {
@@ -66,6 +97,11 @@ export default class UsersController extends BaseController {
     }
   }
 
+  /**
+   * Unfollows a user.
+   * @param {Object} c - The context object.
+   * @returns {Object} The deleted following data.
+   */
   async unfollowUser(c) {
     const { userId, toFollowId } = c.req.param();
     try {
@@ -78,6 +114,11 @@ export default class UsersController extends BaseController {
     }
   }
 
+  /**
+   * Retrieves the followers of a user.
+   * @param {Object} c - The context object.
+   * @returns {Object} The followers data.
+   */
   async getFollowers(c) {
     const { toFollowId } = c.req.param();
     try {
@@ -91,6 +132,11 @@ export default class UsersController extends BaseController {
     }
   }
 
+  /**
+   * Retrieves the users that a user is following.
+   * @param {Object} c - The context object.
+   * @returns {Object} The following data.
+   */
   async getFollowing(c) {
     const { userId } = c.req.param();
     try {
@@ -104,6 +150,11 @@ export default class UsersController extends BaseController {
     }
   }
 
+  /**
+   * Retrieves the notifications of a user.
+   * @param {Object} c - The context object.
+   * @returns {Object} The notifications data.
+   */
   async getNotifications(c) {
     const { userId } = c.req.param();
     try {
@@ -118,6 +169,11 @@ export default class UsersController extends BaseController {
     }
   }
 
+  /**
+   * Creates a notification for a user.
+   * @param {Object} c - The context object.
+   * @returns {Object} The created notification data.
+   */
   async createNotification(c) {
     try {
       const { recipientId, senderId, notifMessage } = await c.req.json();
@@ -133,6 +189,11 @@ export default class UsersController extends BaseController {
     }
   }
 
+  /**
+   * Marks a notification as read.
+   * @param {Object} c - The context object.
+   * @returns {Object} The updated notification data.
+   */
   async markNotificationAsRead(c) {
     const { notificationId } = c.req.param();
     try {

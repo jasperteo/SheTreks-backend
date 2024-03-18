@@ -2,11 +2,22 @@
 import { Hono } from "hono";
 const router = new Hono();
 
+/**
+ * Represents a router for handling user-related routes.
+ */
 export default class UsersRouter {
+  /**
+   * Creates an instance of UsersRouter.
+   * @param {Object} controller - The controller object for handling user-related operations.
+   */
   constructor(controller) {
     this.controller = controller;
   }
 
+  /**
+   * Routes the user-related routes to their respective controller methods.
+   * @returns {Object} - The router object.
+   */
   route() {
     router.get("/", this.controller.getAll.bind(this.controller));
     router.post(

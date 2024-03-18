@@ -2,7 +2,21 @@
 import BaseController from "./baseController";
 import { Op, literal } from "sequelize";
 
+/**
+ * Controller for managing activity-related operations.
+ * @extends BaseController
+ */
 export default class ActivitiesController extends BaseController {
+  /**
+   * Creates an instance of ActivitiesController.
+   * @constructor
+   * @param {Object} model - The model object for activities.
+   * @param {Object} categoriesModel - The model object for categories.
+   * @param {Object} groupSizesModel - The model object for group sizes.
+   * @param {Object} locationsModel - The model object for locations.
+   * @param {Object} participantsModel - The model object for participants.
+   * @param {Object} usersModel - The model object for users.
+   */
   constructor(
     model,
     categoriesModel,
@@ -19,6 +33,12 @@ export default class ActivitiesController extends BaseController {
     this.usersModel = usersModel;
   }
 
+  /**
+   * Retrieves all activities excluding the ones hosted by a specific user.
+   * @async
+   * @param {Object} c - The context object.
+   * @returns {Object} The response object containing the activities data.
+   */
   async getAllExcludeHost(c) {
     const { userId } = c.req.param();
     try {
@@ -51,6 +71,12 @@ export default class ActivitiesController extends BaseController {
     }
   }
 
+  /**
+   * Retrieves all activities hosted by a specific user.
+   * @async
+   * @param {Object} c - The context object.
+   * @returns {Object} The response object containing the activities data.
+   */
   async getAllByHost(c) {
     const { userId } = c.req.param();
     try {
@@ -74,6 +100,12 @@ export default class ActivitiesController extends BaseController {
     }
   }
 
+  /**
+   * Retrieves all past activities associated with a specific user.
+   * @async
+   * @param {Object} c - The context object.
+   * @returns {Object} The response object containing the activities data.
+   */
   async getAllPast(c) {
     const { userId } = c.req.param();
     try {
@@ -110,6 +142,12 @@ export default class ActivitiesController extends BaseController {
     }
   }
 
+  /**
+   * Retrieves all current activities associated with a specific user.
+   * @async
+   * @param {Object} c - The context object.
+   * @returns {Object} The response object containing the activities data.
+   */
   async getAllCurrent(c) {
     const { userId } = c.req.param();
     try {
@@ -144,6 +182,12 @@ export default class ActivitiesController extends BaseController {
     }
   }
 
+  /**
+   * Retrieves all activities joined by a specific user.
+   * @async
+   * @param {Object} c - The context object.
+   * @returns {Object} The response object containing the activities data.
+   */
   async getAllJoinedByUser(c) {
     const { userId } = c.req.param();
     try {
@@ -175,6 +219,12 @@ export default class ActivitiesController extends BaseController {
     }
   }
 
+  /**
+   * Retrieves all activities followed by a specific user.
+   * @async
+   * @param {Object} c - The context object.
+   * @returns {Object} The response object containing the activities data.
+   */
   async getAllFollowing(c) {
     const { userId } = c.req.param();
     try {
@@ -217,6 +267,12 @@ export default class ActivitiesController extends BaseController {
     }
   }
 
+  /**
+   * Creates a new activity.
+   * @async
+   * @param {Object} c - The context object.
+   * @returns {Object} The response object containing the created activity data.
+   */
   async createActivity(c) {
     try {
       const {
@@ -256,6 +312,12 @@ export default class ActivitiesController extends BaseController {
     }
   }
 
+  /**
+   * Retrieves a specific activity by its ID.
+   * @async
+   * @param {Object} c - The context object.
+   * @returns {Object} The response object containing the activity data.
+   */
   async getOneActivity(c) {
     const { activityId } = c.req.param();
     try {
@@ -272,6 +334,12 @@ export default class ActivitiesController extends BaseController {
     }
   }
 
+  /**
+   * Deletes a specific activity by its ID.
+   * @async
+   * @param {Object} c - The context object.
+   * @returns {Object} The response object containing the deleted activity data.
+   */
   async deleteActivity(c) {
     const { activityId } = c.req.param();
     try {
@@ -283,6 +351,12 @@ export default class ActivitiesController extends BaseController {
     }
   }
 
+  /**
+   * Retrieves all categories.
+   * @async
+   * @param {Object} c - The context object.
+   * @returns {Object} The response object containing the categories data.
+   */
   async getAllCategories(c) {
     try {
       const data = await this.categoriesModel.findAll();
@@ -292,6 +366,12 @@ export default class ActivitiesController extends BaseController {
     }
   }
 
+  /**
+   * Retrieves all group sizes.
+   * @async
+   * @param {Object} c - The context object.
+   * @returns {Object} The response object containing the group sizes data.
+   */
   async getAllGroupSizes(c) {
     try {
       const data = await this.groupSizesModel.findAll();
@@ -301,6 +381,12 @@ export default class ActivitiesController extends BaseController {
     }
   }
 
+  /**
+   * Adds a participant to an activity.
+   * @async
+   * @param {Object} c - The context object.
+   * @returns {Object} The response object containing the created participant data.
+   */
   async addParticipant(c) {
     const { activityId } = c.req.param();
     try {
@@ -316,6 +402,12 @@ export default class ActivitiesController extends BaseController {
     }
   }
 
+  /**
+   * Retrieves all confirmed participants of an activity.
+   * @async
+   * @param {Object} c - The context object.
+   * @returns {Object} The response object containing the participants data.
+   */
   async getAllConfirmedParticipants(c) {
     const { activityId } = c.req.param();
     try {
@@ -329,6 +421,12 @@ export default class ActivitiesController extends BaseController {
     }
   }
 
+  /**
+   * Confirms a participant for an activity.
+   * @async
+   * @param {Object} c - The context object.
+   * @returns {Object} The response object containing the updated participant data.
+   */
   async confirmParticipant(c) {
     const { participantId } = c.req.param();
     try {
@@ -340,6 +438,12 @@ export default class ActivitiesController extends BaseController {
     }
   }
 
+  /**
+   * Rejects a participant for an activity.
+   * @async
+   * @param {Object} c - The context object.
+   * @returns {Object} The response object containing the deleted participant data.
+   */
   async rejectParticipant(c) {
     const { participantId } = c.req.param();
     try {
@@ -350,7 +454,12 @@ export default class ActivitiesController extends BaseController {
       return c.json({ message: error.message }, 500);
     }
   }
-
+  /**
+   * Searches for activities based on specified criteria.
+   * @async
+   * @param {Object} c - The context object.
+   * @returns {Object} The response object containing the search results.
+   */
   async searchActivities(c) {
     try {
       const {
